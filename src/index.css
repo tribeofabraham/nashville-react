@@ -89,10 +89,14 @@ button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
 .add:disabled { opacity: 0.4; cursor: not-allowed; }
 
 
+/* Auto-scale on: the sizer fits everything, so there's never a scrollbar. One appearing would narrow
+   the page, the sizer would shrink to fit, the scrollbar would go, and it would see-saw: jiggling. */
+.fitted, .fitted .stage { overflow: hidden; scrollbar-gutter: auto; }
+
 /* -- the progression, written out three ways -- */
 /* The progression and the cards, together as one block, centred in the space under the bar */
 .stage {
-  flex: 1; min-height: 0; overflow: auto;
+  flex: 1; min-height: 0; overflow: auto; scrollbar-gutter: stable;
   display: flex; flex-direction: column; align-items: center; justify-content: safe center;
   gap: 1.2em; padding: 1em;
 }
@@ -248,6 +252,7 @@ button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
 
 /* -- phones: the bar wraps, and the chords scroll two to a row at a fixed shape -- */
 @media (max-width: 700px) {
+  .fitted .stage { overflow: auto; }      /* phones aren't sized to fit: they scroll */
   .title { font-size: 1.2em; width: 100%; }
 
   .scale-toggle { display: none; }

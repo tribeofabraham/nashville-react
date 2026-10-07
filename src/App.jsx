@@ -29,9 +29,11 @@ function useContentSize(blockRef, barRef) {
     const bar = barRef.current
     if (!block || !bar) return
     const measure = () => {
+      // Rounded to a tenth of an em, so a pixel's rounding can't nudge the scale and start it see-sawing.
       const em = parseFloat(getComputedStyle(block).fontSize)
-      const width = Math.round(((block.offsetWidth / em) + 2 * MARGIN_EM) * 16)
-      const height = Math.round((((block.offsetHeight + bar.offsetHeight) / em) + 2 * MARGIN_EM) * 16)
+      const tenth = (v) => Math.round(v * 10) / 10
+      const width = Math.round((tenth(block.offsetWidth / em) + 2 * MARGIN_EM) * 16)
+      const height = Math.round((tenth((block.offsetHeight + bar.offsetHeight) / em) + 2 * MARGIN_EM) * 16)
       setSize((s) => (s.width === width && s.height === height ? s : { width, height }))
     }
     measure()
@@ -43,13 +45,19 @@ function useContentSize(blockRef, barRef) {
   return size
 }
 
-// An element's height in px, kept up to date.
-function useHeight(ref) {
+// An element's height in em (to a tenth), kept up to date. In em, it doesn't change as the sizer scales,
+// so what's sized from it (the wheel) can't feed back into the scale.
+function useHeightEm(ref) {
   const [height, setHeight] = useState(0)
   useLayoutEffect(() => {
     const el = ref.current
     if (!el) return
-    const observer = new ResizeObserver(() => setHeight(el.offsetHeight))
+    const measure = () => {
+      const em = parseFloat(getComputedStyle(el).fontSize)
+      const h = Math.round((el.offsetHeight / em) * 10) / 10
+      setHeight((old) => (old === h ? old : h))
+    }
+    const observer = new ResizeObserver(measure)
     observer.observe(el)
     return () => observer.disconnect()
   }, [ref])
@@ -68,7 +76,7 @@ export default function App() {
   const blockRef = useRef(null)
   const barRef = useRef(null)
   const infoRef = useRef(null)
-  const infoHeight = useHeight(infoRef)  // the wheel is as tall as the info rows beside it
+  const infoHeight = useHeightEm(infoRef)  // the wheel is as tall as the info rows beside it
   const content = useContentSize(blockRef, barRef)
   const scale = useSizer(sizerRef, { ...SIZER, designWidth: content.width, designHeight: content.height,
                                      enabled: scaling === 'fluid' })
@@ -106,7 +114,7 @@ export default function App() {
   return (
     <div className="sizer" ref={sizerRef}>
     <div className="scaled" style={{ fontSize: `${scale}rem` }}>
-    <div className="app">
+    <div className={scaling === 'fluid' ? 'app fitted' : 'app'}>
       {/* The top: the info rows (two rows of controls, the progression, the colour legend) on the left,
           the wheel on the right as tall as all of them */}
       <header className="head" ref={barRef}>
@@ -158,7 +166,7 @@ export default function App() {
             <ScaleLine keyRoot={keyRoot} type={scaleType} />
           )}
         </div>
-        <div className="head-wheel" style={{ width: infoHeight, height: infoHeight }}>
+        <div className="head-wheel" style={{ width: `${infoHeight}em`, height: `${infoHeight}em` }}>
           <Wheel keyRoot={keyRoot} used={used} onKey={setKey} outline />
         </div>
       </header>
