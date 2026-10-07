@@ -1,4 +1,4 @@
-import { DEGREE_COLORS, display, MAJOR_SCALE, NOTES, ROLE_COLORS, ROLE_NAMES } from '../music/theory.js'
+import { DEGREE_COLORS, MAJOR_SCALE, ROLE_COLORS, ROLE_NAMES, spellInKey } from '../music/theory.js'
 
 // What the colours mean, for the colouring in use.
 export default function Legend({ scheme, keyRoot }) {
@@ -8,7 +8,7 @@ export default function Legend({ scheme, keyRoot }) {
         text: role === '2' ? 'second / ninth' : ROLE_NAMES[role],
       }))
     : Object.entries(DEGREE_COLORS).map(([degree, color]) => ({
-        color, mark: degree, text: display(NOTES[(keyRoot + MAJOR_SCALE[degree - 1]) % 12]),
+        color, mark: degree, text: spellInKey(keyRoot, Number(degree), (keyRoot + MAJOR_SCALE[degree - 1]) % 12),
       }))
   return (
     <ul className="legend" aria-label="What the colours mean">

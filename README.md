@@ -3,7 +3,12 @@
 A clean-slate React version of the Tribe of Abraham Nashville Notation wheel: pick a key, build a
 progression in Nashville numbers, and see each chord on guitar, keys, or both, big and bold.
 
-Notes are coloured two ways, from the original's artwork:
+**Chords or a scale**: switch to Scale to see the key's scale (major, natural minor, major and minor
+pentatonic, blues, Mixolydian) on the whole guitar neck and on the keys, every note labelled by its
+degree, the roots ringed.
+
+Notes are spelled for the key (D major has F♯ and C♯, F major has B♭), and coloured two ways, from
+the original's artwork:
 
 - **By chord**: each note's role in the chord. Root red, 3rd blue, 5th green, 7th orange.
 - **By key**: each note's place in the key, 1 to 7. In D, a G chord shows as 4, 6 and 1.

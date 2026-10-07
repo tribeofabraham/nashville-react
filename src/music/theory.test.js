@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { GUITAR, guitarShape } from './guitar.js'
-import { chordName, chordRoot, chordTones, inKey, nashville, nashvilleSpoken, noteColor, NOTES, QUALITIES } from './theory.js'
+import { chordName, chordRoot, chordTones, inKey, nashville, nashvilleSpoken, noteColor, NOTES, QUALITIES, SCALES, scaleNotes } from './theory.js'
 
 const D = NOTES.indexOf('D')
 const AMAZING_GRACE = [
@@ -32,6 +32,14 @@ test('the same numbers in every key are the same distance apart', () => {
     assert.equal((roots[1] - roots[0] + 12) % 12, 10) // ♭7 is ten semitones up
     assert.equal((roots[2] - roots[0] + 12) % 12, 5) // 4 is five semitones up
   }
+})
+
+test('chord names are spelled for the key', () => {
+  const three = { degree: 3, flat: false, quality: 'm' }
+  assert.equal(chordName(D, three), 'F♯m')                        // not G♭m
+  assert.equal(chordName(NOTES.indexOf('F'), { degree: 4, flat: false, quality: '' }), 'B♭')
+  assert.equal(chordName(NOTES.indexOf('E'), { degree: 7, flat: true, quality: '' }), 'D')
+  assert.equal(chordName(NOTES.indexOf('A'), { degree: 6, flat: false, quality: 'm' }), 'F♯m')
 })
 
 test('the diatonic chords of C', () => {
@@ -99,4 +107,19 @@ test('the original 36 guitar shapes: only chord tones, and all of them', () => {
     for (const i of needed) assert.ok(played.has(i), `${name} doesn't play all its tones`)
   }
   assert.equal(Object.keys(GUITAR).length, 36)
+})
+
+test('scales: the right notes in the right keys', () => {
+  const names = (root, type) => scaleNotes(root, type).map((n) => n.name).join(' ')
+  assert.equal(names(D, 'major'), 'D E F♯ G A B C♯')          // spelled for the key: sharps in D
+  assert.equal(names(NOTES.indexOf('F'), 'major'), 'F G A B♭ C D E')
+  assert.equal(names(NOTES.indexOf('A'), 'minor'), 'A B C D E F G')
+  assert.equal(names(NOTES.indexOf('E'), 'minorPentatonic'), 'E G A B D')
+  assert.equal(names(NOTES.indexOf('A'), 'blues'), 'A C D E♭ E G')
+  assert.equal(names(D, 'blues'), 'D F G A♭ A C')
+  assert.equal(names(NOTES.indexOf('G'), 'mixolydian'), 'G A B C D E F')
+  for (const [type, s] of Object.entries(SCALES)) {
+    assert.equal(s.steps.length, s.degrees.length, `${type}: a degree for every step`)
+    assert.equal(scaleNotes(0, type)[0].color, '#c02727', `${type}: the root is red`)
+  }
 })

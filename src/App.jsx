@@ -1,16 +1,18 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import ChordCard from './components/ChordCard.jsx'
 import Progression from './components/Progression.jsx'
+import ScaleView, { ScaleLine } from './components/ScaleView.jsx'
 import Wheel from './components/Wheel.jsx'
 import Choice from './components/Choice.jsx'
 import Legend from './components/Legend.jsx'
 import { fromSongMessage, MAX_CHORDS, START } from './music/progression.js'
-import { chordName, display, MAJOR_SCALE, NOTES } from './music/theory.js'
+import { chordName, display, MAJOR_SCALE, NOTES, SCALES } from './music/theory.js'
 import { usePersisted } from './usePersisted.js'
 import { useSizer } from './sizer.js'
 
 const VIEWS = [['guitar', 'Guitar'], ['keys', 'Keys'], ['both', 'Both']]
 const SCHEMES = [['chord', 'By chord'], ['key', 'By key']]
+const MODES = [['chords', 'Chords'], ['scale', 'Scale']]
 
 // The sizer (as on the xAPI login): the whole app is in em, scaled to fill the window, width and height.
 // Its design size is the content's own (useContentSize below), so the chords grow until they fill the
@@ -59,6 +61,8 @@ export default function App() {
   const [chords, setChords] = useState(START.chords)
   const [view, setView] = usePersisted('view', 'both', ['guitar', 'keys', 'both'])
   const [scheme, setScheme] = usePersisted('scheme', 'chord', ['chord', 'key'])
+  const [mode, setMode] = usePersisted('mode', 'chords', ['chords', 'scale'])
+  const [scaleType, setScaleType] = usePersisted('scale', 'major', Object.keys(SCALES))
   const [scaling, setScaling] = usePersisted('scaling', 'fluid', ['fluid', 'fixed'])
   const sizerRef = useRef(null)
   const blockRef = useRef(null)
@@ -82,8 +86,10 @@ export default function App() {
     return () => window.removeEventListener('message', onMessage)
   }, [])
 
-  // Steps of the wheel the progression uses, to ring them there.
-  const used = useMemo(() => new Set(chords.map((c) => (MAJOR_SCALE[c.degree - 1] - (c.flat ? 1 : 0) + 12) % 12)), [chords])
+  // Steps of the wheel to ring: the progression's, or the scale's.
+  const used = useMemo(() => (mode === 'scale'
+    ? new Set(SCALES[scaleType].steps)
+    : new Set(chords.map((c) => (MAJOR_SCALE[c.degree - 1] - (c.flat ? 1 : 0) + 12) % 12))), [mode, scaleType, chords])
 
   const change = (i, chord) => setChords((cs) => cs.map((c, j) => (j === i ? chord : c)))
   const remove = (i) => setChords((cs) => cs.filter((_, j) => j !== i))
@@ -93,7 +99,9 @@ export default function App() {
   const rows = chords.length > 4 ? 2 : 1
   const cols = Math.ceil(chords.length / rows)
 
-  const summary = `Key of ${display(NOTES[keyRoot])}: ${chords.map((c) => display(chordName(keyRoot, c))).join(', ')}`
+  const summary = mode === 'scale'
+    ? `${display(NOTES[keyRoot])} ${SCALES[scaleType].label.toLowerCase()} scale`
+    : `Key of ${display(NOTES[keyRoot])}: ${chords.map((c) => display(chordName(keyRoot, c))).join(', ')}`
 
   return (
     <div className="sizer" ref={sizerRef}>
@@ -118,18 +126,37 @@ export default function App() {
             </div>
           </div>
           <div className="bar-row">
+            <span id="bar-mode" className="visually-hidden">Show chords or a scale</span>
+            <Choice label="bar-mode" options={MODES} value={mode} onChange={setMode} />
             <span id="bar-view" className="visually-hidden">Show</span>
             <Choice label="bar-view" options={VIEWS} value={view} onChange={setView} />
-            <span id="bar-colour" className="visually-hidden">Colour notes</span>
-            <Choice label="bar-colour" options={SCHEMES} value={scheme} onChange={setScheme} />
-            <button type="button" className="add" onClick={add} disabled={chords.length >= MAX_CHORDS}
-                    aria-label={chords.length >= MAX_CHORDS ? `Add chord (${MAX_CHORDS} is the most)` : 'Add chord'}>+ Chord</button>
+            {mode === 'chords' ? (
+              <>
+                <span id="bar-colour" className="visually-hidden">Colour notes</span>
+                <Choice label="bar-colour" options={SCHEMES} value={scheme} onChange={setScheme} />
+                <button type="button" className="add" onClick={add} disabled={chords.length >= MAX_CHORDS}
+                        aria-label={chords.length >= MAX_CHORDS ? `Add chord (${MAX_CHORDS} is the most)` : 'Add chord'}>+ Chord</button>
+              </>
+            ) : (
+              <label className="scale-pick">
+                <span className="visually-hidden">Scale</span>
+                <select value={scaleType} onChange={(e) => setScaleType(e.target.value)}>
+                  {Object.entries(SCALES).map(([value, sc]) => <option key={value} value={value}>{sc.label}</option>)}
+                </select>
+              </label>
+            )}
             <button type="button" className="toggle scale-toggle" aria-pressed={scaling === 'fluid'}
                     onClick={() => setScaling(scaling === 'fluid' ? 'fixed' : 'fluid')}>Auto-scale text</button>
           </div>
         </div>
-          <Progression keyRoot={keyRoot} chords={chords} />
-          <Legend scheme={scheme} keyRoot={keyRoot} />
+          {mode === 'chords' ? (
+            <>
+              <Progression keyRoot={keyRoot} chords={chords} />
+              <Legend scheme={scheme} keyRoot={keyRoot} />
+            </>
+          ) : (
+            <ScaleLine keyRoot={keyRoot} type={scaleType} />
+          )}
         </div>
         <div className="head-wheel" style={{ width: infoHeight, height: infoHeight }}>
           <Wheel keyRoot={keyRoot} used={used} onKey={setKey} outline />
@@ -141,12 +168,16 @@ export default function App() {
       <main className="stage">
       <div className="block" ref={blockRef}>
 
-      <div className="grid" style={{ '--cols': cols, '--card': rows > 1 ? '15em' : '17em' }}>
-        {chords.map((chord, i) => (
-          <ChordCard key={i} index={i} chord={chord} keyRoot={keyRoot} view={view} scheme={scheme}
-                     onChange={(c) => change(i, c)} onRemove={() => remove(i)} canRemove={chords.length > 1} />
-        ))}
-      </div>
+      {mode === 'scale' ? (
+        <ScaleView keyRoot={keyRoot} type={scaleType} view={view} />
+      ) : (
+        <div className="grid" style={{ '--cols': cols, '--card': rows > 1 ? '15em' : '17em' }}>
+          {chords.map((chord, i) => (
+            <ChordCard key={i} index={i} chord={chord} keyRoot={keyRoot} view={view} scheme={scheme}
+                       onChange={(c) => change(i, c)} onRemove={() => remove(i)} canRemove={chords.length > 1} />
+          ))}
+        </div>
+      )}
       </div>
       </main>
 

@@ -7,16 +7,19 @@ const H = 76
 const BW = 12
 const BH = 48
 
-// Two octaves from C, with every key that's a note of the chord coloured and labelled.
+// A chord on the keys: every key that's a note of the chord, coloured and labelled by the scheme.
 export default function Keyboard({ root, quality, scheme, keyRoot }) {
   const tones = chordTones(root, quality)
-  const lit = new Map()
-  for (let n = 0; n < 24; n++) {
-    const tone = tones.find((t) => t.pitch === n % 12)
-    if (tone) lit.set(n, tone)
-  }
-  const label = (tone) => (scheme === 'chord' ? (tone.role === 'R' ? '1' : tone.role) : inKey(keyRoot, tone.pitch).label)
+  const marks = new Map(tones.map((t) => [t.pitch, {
+    color: noteColor(scheme, t, keyRoot),
+    label: scheme === 'chord' ? (t.role === 'R' ? '1' : t.role) : inKey(keyRoot, t.pitch).label,
+  }]))
+  const names = tones.map((t) => display(NOTES[t.pitch])).join(' ')
+  return <Piano marks={marks} label={`Keyboard: ${names}`} />
+}
 
+// Two octaves from C. marks: pitch (0-11) -> { color, label }, lit in every octave.
+export function Piano({ marks, label }) {
   const whites = []
   const blacks = []
   for (let octave = 0; octave < 2; octave++) {
@@ -25,26 +28,24 @@ export default function Keyboard({ root, quality, scheme, keyRoot }) {
   }
 
   const key = ({ n, x }, black) => {
-    const tone = lit.get(n)
-    const color = tone && noteColor(scheme, tone, keyRoot)
+    const mark = marks.get(n % 12)
     const w = black ? BW : W
     const h = black ? BH : H
     return (
       <g key={n}>
         <rect x={x} y={0} width={w} height={h} rx={black ? 2 : 3}
-              className={black ? 'key black' : 'key white'} style={color ? { fill: color } : undefined} />
-        {tone && (
+              className={black ? 'key black' : 'key white'} style={mark ? { fill: mark.color } : undefined} />
+        {mark && (
           <text x={x + w / 2} y={h - (black ? 9 : 12)} className="key-label" textAnchor="middle" dominantBaseline="central">
-            {label(tone)}
+            {mark.label}
           </text>
         )}
       </g>
     )
   }
 
-  const names = tones.map((t) => display(NOTES[t.pitch])).join(' ')
   return (
-    <svg className="keys" viewBox={`-2 -2 ${14 * W + 4} ${H + 4}`} role="img" aria-label={`Keyboard: ${names}`}>
+    <svg className="keys" viewBox={`-2 -2 ${14 * W + 4} ${H + 4}`} role="img" aria-label={label}>
       {whites.map((k) => key(k, false))}
       {blacks.map((k) => key(k, true))}
     </svg>

@@ -183,6 +183,26 @@ button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
   font-family: var(--bold); color: #fff; font-size: 0.9em;
 }
 
+/* -- a scale: one big card, the neck and/or the keys -- */
+.scale-card {
+  display: flex; flex-direction: column; align-items: center; gap: 1.2em; width: 46em;
+  background: var(--warm); border: 0.0625em solid var(--line); border-radius: 0.8em; padding: 1.2em 1.5em 1.5em;
+}
+.scale-name { font-family: var(--bold); font-weight: 400; font-size: 2.2em; letter-spacing: 0.01em; }
+.scale-card svg { width: 100%; height: auto; display: block; }
+.scale-card .keys { width: 70%; }
+.fretboard .fret { stroke: var(--muted); stroke-width: 1.4; }
+.fretboard .nut { stroke: var(--paper); stroke-width: 4; }
+.fretboard .string { stroke: var(--cream); stroke-width: 1.2; }
+.fretboard .inlay { fill: rgba(232, 224, 208, 0.18); }
+.fretboard .fret-number { fill: var(--muted); font-family: var(--bold); font-size: 11px; }
+.fretboard .root-ring { fill: none; stroke-width: 2; }
+.fretboard .dot-label { font-size: 9.5px; }
+.scale-pick select {
+  background: var(--ink); color: var(--brass-light); border: 0.0625em solid var(--brass); border-radius: 0.4em;
+  padding: 0.45em 0.6em; font-weight: 600; cursor: pointer;
+}
+
 /* -- the wheel -- */
 .wheel { width: min(100%, 22em); align-self: center; }
 .wheel-outer { fill: var(--ink); stroke: var(--brass); stroke-width: 1.2; }
@@ -222,6 +242,9 @@ button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
   .grid { width: 100%; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75em; }
   .card { padding: 0.6em; }
   .chord-name { font-size: 2.4em; }
+  .scale-card { width: 100%; padding: 0.8em; }
+  .scale-card .keys { width: 100%; }
+  .scale-name { font-size: 1.5em; }
   .chord-number { font-size: 1.6em; }
   .stage { padding: 0.75em; justify-content: flex-start; }
   .block { width: 100%; }
