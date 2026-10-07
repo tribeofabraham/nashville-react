@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import ChordCard from './components/ChordCard.jsx'
+import Progression from './components/Progression.jsx'
 import Settings, { Choice } from './components/Settings.jsx'
 import { fromSongMessage, MAX_CHORDS, START } from './music/progression.js'
 import { chordName, display, MAJOR_SCALE, NOTES } from './music/theory.js'
@@ -78,11 +79,15 @@ export default function App() {
 
       <p className="visually-hidden" aria-live="polite">{summary}</p>
 
-      <main className="grid" style={{ '--cols': cols }}>
+      <main className="stage">
+      <Progression keyRoot={keyRoot} chords={chords} />
+
+      <div className="grid" style={{ '--cols': cols, '--card': rows > 1 ? '15em' : '17em' }}>
         {chords.map((chord, i) => (
           <ChordCard key={i} index={i} chord={chord} keyRoot={keyRoot} view={view} scheme={scheme} editing={editing}
                      onChange={(c) => change(i, c)} onRemove={() => remove(i)} canRemove={chords.length > 1} />
         ))}
+      </div>
       </main>
 
       <Settings open={settingsOpen} onClose={() => setSettingsOpen(false)} keyRoot={keyRoot} onKey={setKey} used={used}

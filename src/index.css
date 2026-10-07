@@ -78,13 +78,32 @@ button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
 }
 .edit[aria-pressed='true'] { background: var(--brass); color: var(--ink); }
 
+/* -- the progression, written out three ways -- */
+/* The progression and the cards, together as one block, centred in the space under the bar */
+.stage {
+  flex: 1; min-height: 0; overflow: auto;
+  display: flex; flex-direction: column; align-items: center; justify-content: safe center;
+  gap: 1.2em; padding: 1em;
+}
+.progression { display: flex; justify-content: center; }
+.progression table { border-collapse: collapse; }
+.progression th {
+  padding: 0.15em 1.2em 0.15em 0; text-align: right; font-weight: 600;
+  font-size: 0.8em; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
+}
+.progression td { padding: 0.1em 0.9em; text-align: center; line-height: 1.1; }
+.progression td + td { border-left: 0.0625em solid var(--line); }
+.progression .nashville td { font-family: var(--bold); font-size: 2.2em; color: var(--brass-light); }
+.progression .roman td { font-family: var(--serif-roman); font-size: 1.6em; color: var(--cream); }
+.progression .names td { font-family: var(--bold); font-size: 1.4em; color: var(--paper); }
+.progression sup { font-size: 0.6em; vertical-align: 0.7em; line-height: 0; margin-left: 0.04em; }
+
 /* -- the chords: fixed-size cards (in em, so the sizer scales them), centred; one row up to four,
    two rows after -- */
 .grid {
-  flex: 1; min-height: 0;
-  display: grid; gap: 1em; padding: 1em;
-  grid-template-columns: repeat(var(--cols), 17em);
-  justify-content: center; align-content: center;
+  display: grid; gap: 1em;
+  grid-template-columns: repeat(var(--cols), var(--card));   /* 17em, or 15em when there are two rows */
+  justify-content: center;
 }
 
 .card {
@@ -191,9 +210,15 @@ button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
 @media (max-width: 700px) {
   .title { font-size: 1.2em; width: 100%; }
   .settings-button { display: none; }
-  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); align-content: start; overflow: auto; padding: 0.75em; gap: 0.75em; }
+  .grid { width: 100%; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75em; }
   .card { padding: 0.6em; }
   .chord-name { font-size: 2.4em; }
   .chord-number { font-size: 1.6em; }
   .chord-roman { font-size: 1.1em; }
+  .stage { padding: 0.75em; justify-content: flex-start; }
+  .progression { max-width: 100%; overflow-x: auto; justify-content: flex-start; }
+  .progression .nashville td { font-size: 1.5em; }
+  .progression .roman td { font-size: 1.15em; }
+  .progression .names td { font-size: 1.05em; }
+  .progression td { padding: 0.1em 0.5em; }
 }
