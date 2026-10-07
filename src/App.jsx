@@ -20,11 +20,16 @@ const MODES = [['chords', 'Chords'], ['scale', 'Scale']]
 // screen, however many there are and whichever view. Phones (under 34em wide) keep their own layout.
 const SIZER = { fitHeight: true, minScale: 0.5, maxScale: 4 }
 const MARGIN_EM = 1.5 // room kept around the content when it's scaled to fit
+// Smaller changes than this (in em) are ignored. At 125% or 150% display scaling the browser rounds
+// every box to whole pixels, so a nudge in the scale makes the content measure a few hundredths of an
+// em different, which nudges the scale back: a see-saw. Real changes (a chord added, another
+// instrument) are several em.
+const IGNORE_EM = 0.5
 
 // The content's size at 1em: the progression and cards, plus the bar above them. It's all in em, so this
 // doesn't change as the sizer scales it, and measuring it can't feed back into the scale.
 function useContentSize(blockRef, barRef) {
-  const [size, setSize] = useState({ width: 1600, height: 900 })
+  const [size, setSize] = useState(null)   // null until measured, so the first measurement always counts
   useLayoutEffect(() => {
     const block = blockRef.current
     const bar = barRef.current
@@ -35,7 +40,8 @@ function useContentSize(blockRef, barRef) {
       const tenth = (v) => Math.round(v * 10) / 10
       const width = Math.round((tenth(block.offsetWidth / em) + 2 * MARGIN_EM) * 16)
       const height = Math.round((tenth((block.offsetHeight + bar.offsetHeight) / em) + 2 * MARGIN_EM) * 16)
-      setSize((s) => (s.width === width && s.height === height ? s : { width, height }))
+      const near = (a, b) => Math.abs(a - b) < IGNORE_EM * 16
+      setSize((s) => (s && near(s.width, width) && near(s.height, height) ? s : { width, height }))
     }
     measure()
     const observer = new ResizeObserver(measure)
@@ -43,7 +49,7 @@ function useContentSize(blockRef, barRef) {
     observer.observe(bar)
     return () => observer.disconnect()
   }, [blockRef, barRef])
-  return size
+  return size ?? { width: 1600, height: 900 }
 }
 
 // An element's height in em (to a tenth), kept up to date. In em, it doesn't change as the sizer scales,
@@ -56,7 +62,7 @@ function useHeightEm(ref) {
     const measure = () => {
       const em = parseFloat(getComputedStyle(el).fontSize)
       const h = Math.round((el.offsetHeight / em) * 10) / 10
-      setHeight((old) => (old === h ? old : h))
+      setHeight((old) => (Math.abs(old - h) < IGNORE_EM ? old : h))
     }
     const observer = new ResizeObserver(measure)
     observer.observe(el)
