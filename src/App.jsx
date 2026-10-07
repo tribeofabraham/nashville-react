@@ -2,13 +2,15 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import ChordCard from './components/ChordCard.jsx'
 import Progression from './components/Progression.jsx'
 import Wheel from './components/Wheel.jsx'
-import Settings, { Choice } from './components/Settings.jsx'
+import Choice from './components/Choice.jsx'
+import Legend from './components/Legend.jsx'
 import { fromSongMessage, MAX_CHORDS, START } from './music/progression.js'
 import { chordName, display, MAJOR_SCALE, NOTES } from './music/theory.js'
 import { usePersisted } from './usePersisted.js'
 import { useSizer } from './sizer.js'
 
 const VIEWS = [['guitar', 'Guitar'], ['keys', 'Keys'], ['both', 'Both']]
+const SCHEMES = [['chord', 'By chord'], ['key', 'By key']]
 
 // The sizer (as on the xAPI login): the whole app is in em, scaled to fill the window, width and height.
 // Its design size is the content's own (useContentSize below), so the chords grow until they fill the
@@ -44,7 +46,6 @@ export default function App() {
   const [chords, setChords] = useState(START.chords)
   const [view, setView] = usePersisted('view', 'both', ['guitar', 'keys', 'both'])
   const [scheme, setScheme] = usePersisted('scheme', 'chord', ['chord', 'key'])
-  const [settingsOpen, setSettingsOpen] = useState(false)
   const [scaling, setScaling] = usePersisted('scaling', 'fluid', ['fluid', 'fixed'])
   const sizerRef = useRef(null)
   const blockRef = useRef(null)
@@ -85,20 +86,24 @@ export default function App() {
     <div className="app">
       <header className="bar" ref={barRef}>
         <h1 className="title">Nashville <span>Notation</span></h1>
-        <button type="button" className="key-button" onClick={() => setSettingsOpen(true)}
-                aria-label={`Key of ${display(NOTES[keyRoot])}. Open the key wheel and settings`}>
+        <label className="key-pick">
           <span className="key-caption">Key</span>
-          <span className="key-name">{display(NOTES[keyRoot])}</span>
-        </button>
+          <select value={keyRoot} onChange={(e) => setKey(Number(e.target.value))}>
+            {NOTES.map((n, i) => <option key={n} value={i}>{display(n)}</option>)}
+          </select>
+        </label>
         <div className="segmented" role="group" aria-label="Transpose">
           <button type="button" onClick={() => setKey((k) => (k + 11) % 12)} aria-label="Transpose down a half step">−</button>
           <button type="button" onClick={() => setKey((k) => (k + 1) % 12)} aria-label="Transpose up a half step">+</button>
         </div>
         <span id="bar-view" className="visually-hidden">Show</span>
         <Choice label="bar-view" options={VIEWS} value={view} onChange={setView} />
+        <span id="bar-colour" className="visually-hidden">Colour notes</span>
+        <Choice label="bar-colour" options={SCHEMES} value={scheme} onChange={setScheme} />
         <button type="button" className="add" onClick={add} disabled={chords.length >= MAX_CHORDS}
                 aria-label={chords.length >= MAX_CHORDS ? `Add chord (${MAX_CHORDS} is the most)` : 'Add chord'}>+ Chord</button>
-        <button type="button" className="settings-button" onClick={() => setSettingsOpen(true)}>Settings</button>
+        <button type="button" className="toggle scale-toggle" aria-pressed={scaling === 'fluid'}
+                onClick={() => setScaling(scaling === 'fluid' ? 'fixed' : 'fluid')}>Auto-scale text</button>
       </header>
 
       <p className="visually-hidden" aria-live="polite">{summary}</p>
@@ -107,7 +112,10 @@ export default function App() {
       <div className="block" ref={blockRef}>
       <div className="top">
         <Wheel keyRoot={keyRoot} used={used} onKey={setKey} outline />
-        <Progression keyRoot={keyRoot} chords={chords} />
+        <div className="top-text">
+          <Progression keyRoot={keyRoot} chords={chords} />
+          <Legend scheme={scheme} keyRoot={keyRoot} />
+        </div>
       </div>
 
       <div className="grid" style={{ '--cols': cols, '--card': rows > 1 ? '15em' : '17em' }}>
@@ -119,9 +127,6 @@ export default function App() {
       </div>
       </main>
 
-      <Settings open={settingsOpen} onClose={() => setSettingsOpen(false)} keyRoot={keyRoot} onKey={setKey} used={used}
-                view={view} onView={setView} scheme={scheme} onScheme={setScheme}
-                scaling={scaling} onScaling={setScaling} />
     </div>
     </div>
     </div>

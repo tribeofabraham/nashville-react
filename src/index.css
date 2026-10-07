@@ -49,13 +49,19 @@ button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
 .title { font-family: var(--bold); font-weight: 400; font-size: 1.5em; letter-spacing: 0.02em; margin-right: auto; }
 .title span { color: var(--brass-light); }
 
-.key-button {
-  display: flex; align-items: baseline; gap: 0.4em;
-  padding: 0.25em 0.9em; background: var(--brass); color: var(--ink);
-  border: 0; border-radius: 0.4em;
+/* The key: a dropdown, brass like the old key button */
+.key-pick {
+  display: flex; align-items: center; gap: 0.4em;
+  padding: 0.15em 0.4em 0.15em 0.8em; background: var(--brass); color: var(--ink); border-radius: 0.4em;
+  cursor: pointer;
 }
 .key-caption { font-size: 0.8em; text-transform: uppercase; letter-spacing: 0.1em; }
-.key-name { font-family: var(--bold); font-size: 1.6em; line-height: 1.1; }
+.key-pick select {
+  background: transparent; border: 0; color: var(--ink); cursor: pointer;
+  font-family: var(--bold); font-size: 1.6em; line-height: 1.1;
+}
+.key-pick select option { font-family: var(--sans); font-size: 1rem; background: var(--paper); color: var(--ink); }
+.key-pick:focus-within { outline: 0.19em solid var(--brass-light); outline-offset: 0.12em; }
 
 .segmented { display: inline-flex; border: 0.0625em solid var(--brass); border-radius: 0.4em; overflow: hidden; }
 .segmented button {
@@ -66,7 +72,7 @@ button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
 .segmented button[aria-pressed='true'] { background: var(--brass); color: var(--ink); }
 .segmented button:hover:not([aria-pressed='true']) { background: rgba(184, 146, 58, 0.15); }
 
-.add, .settings-button {
+.add {
   padding: 0.45em 0.9em; background: transparent; color: var(--brass-light);
   border: 0.0625em solid var(--brass); border-radius: 0.4em; font-weight: 600;
 }
@@ -82,6 +88,7 @@ button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
 }
 .block { display: flex; flex-direction: column; align-items: center; gap: 1.2em; }
 .top { display: flex; align-items: center; justify-content: center; gap: 2em; }
+.top-text { display: flex; flex-direction: column; align-items: center; gap: 0.9em; }
 .progression { display: flex; justify-content: center; }
 .progression table { border-collapse: collapse; }
 .progression th {
@@ -134,7 +141,7 @@ button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
 .instruments { display: flex; flex-direction: column; gap: 0.8em; }
 .instruments svg { width: 100%; height: auto; display: block; }
 
-/* An on/off button (Settings' Auto-scale text) */
+/* An on/off button (Auto-scale text) */
 .toggle {
   min-width: 2.5em; padding: 0.35em 0.6em; font-weight: 700;
   background: transparent; color: var(--brass-light); border: 0.0625em solid var(--brass); border-radius: 0.4em;
@@ -165,26 +172,8 @@ button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
 .keys .key.black { fill: #1a1612; stroke: var(--ink); stroke-width: 1; }
 .key-label { fill: #fff; font-family: var(--bold); font-size: 10px; pointer-events: none; }
 
-/* -- settings overlay -- */
-.settings {
-  margin: auto; max-width: min(34em, calc(100% - 2em)); max-height: calc(100% - 2em);
-  padding: 0; border: 0.0625em solid var(--line); border-radius: 1em;
-  background: var(--warm); color: var(--paper);
-}
-.settings::backdrop { background: rgba(13, 11, 9, 0.75); }
-.settings-body { display: flex; flex-direction: column; gap: 1em; padding: 1.25em; }
-.settings-head { display: flex; justify-content: space-between; align-items: center; }
-.settings-head h2 { font-family: var(--bold); font-weight: 400; font-size: 1.5em; }
-.close { background: transparent; border: 0; color: var(--muted); font-size: 1.3em; padding: 0.3em 0.5em; }
-.settings-row { display: flex; align-items: center; gap: 0.75em; flex-wrap: wrap; }
-.settings-row > label, .settings-row > span { min-width: 4.5em; color: var(--cream); }
-.settings-row .scale-toggle { font-weight: 600; }
-.settings-row select {
-  background: var(--ink); border: 0.0625em solid var(--brass); border-radius: 0.4em;
-  padding: 0.4em 0.6em; font-family: var(--bold); font-size: 1.2em;
-}
-
-.legend { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 0.6em 1em; color: var(--cream); }
+/* -- the colour legend -- */
+.legend { list-style: none; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5em 1em; color: var(--cream); font-size: 0.85em; }
 .legend li { display: flex; align-items: center; gap: 0.4em; }
 .swatch {
   display: inline-grid; place-items: center; width: 1.6em; height: 1.6em; border-radius: 50%;
@@ -222,7 +211,7 @@ button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
 /* -- phones: the bar wraps, and the chords scroll two to a row at a fixed shape -- */
 @media (max-width: 700px) {
   .title { font-size: 1.2em; width: 100%; }
-  .settings-button { display: none; }
+  .scale-toggle { display: none; }
   .grid { width: 100%; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75em; }
   .card { padding: 0.6em; }
   .chord-name { font-size: 2.4em; }
