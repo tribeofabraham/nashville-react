@@ -1,6 +1,12 @@
-import { chordName, chordRoot, display, nashville, nashvilleSpoken } from '../music/theory.js'
+import { chordName, chordRoot, display, nashvilleSpoken } from '../music/theory.js'
 import GuitarDiagram from './GuitarDiagram.jsx'
 import Keyboard from './Keyboard.jsx'
+
+// The number, flats included, chromatically: what the dropdown on each card offers.
+const NUMBERS = [
+  [1, false], [2, true], [2, false], [3, true], [3, false], [4, false],
+  [5, true], [5, false], [6, true], [6, false], [7, true], [7, false],
+].map(([degree, flat]) => ({ value: `${flat ? 'b' : ''}${degree}`, label: `${flat ? '♭' : ''}${degree}`, degree, flat }))
 
 const QUALITIES = [
   { value: '', label: 'Maj', spoken: 'major' },
@@ -19,9 +25,18 @@ export default function ChordCard({ index, chord, keyRoot, view, scheme, editing
     <article className="card" aria-label={`Chord ${n}: ${display(name)}, ${nashvilleSpoken(chord)}`}>
       <header className="card-head">
         <span className="chord-name">{display(name)}</span>
-        <span className="chord-number" aria-hidden="true">
-          {nashville({ ...chord, quality: chord.quality === '7' ? '' : chord.quality })}
-          {chord.quality === '7' && <sup>7</sup>}
+        {/* The number is the control: pick another straight from the card */}
+        <span className="chord-number">
+          <label className="visually-hidden" htmlFor={`number-${n}`}>Chord {n} number</label>
+          <select id={`number-${n}`} value={`${chord.flat ? 'b' : ''}${chord.degree}`}
+                  onChange={(e) => {
+                    const pick = NUMBERS.find((x) => x.value === e.target.value)
+                    set({ degree: pick.degree, flat: pick.flat })
+                  }}>
+            {NUMBERS.map((x) => <option key={x.value} value={x.value}>{x.label}</option>)}
+          </select>
+          {chord.quality === 'm' && <span aria-hidden="true">m</span>}
+          {chord.quality === '7' && <sup aria-hidden="true">7</sup>}
         </span>
       </header>
 
@@ -31,12 +46,6 @@ export default function ChordCard({ index, chord, keyRoot, view, scheme, editing
       </div>
 
       {editing && <div className="card-controls">
-        <label className="visually-hidden" htmlFor={`degree-${n}`}>Chord {n} number</label>
-        <select id={`degree-${n}`} value={chord.degree} onChange={(e) => set({ degree: Number(e.target.value) })}>
-          {[1, 2, 3, 4, 5, 6, 7].map((d) => <option key={d} value={d}>{d}</option>)}
-        </select>
-        <button type="button" className="toggle" aria-pressed={chord.flat} aria-label={`Chord ${n} flat`}
-                onClick={() => set({ flat: !chord.flat })}>♭</button>
         <div className="segmented" role="group" aria-label={`Chord ${n} quality`}>
           {QUALITIES.map((q) => (
             <button key={q.value} type="button" aria-pressed={chord.quality === q.value} aria-label={q.spoken}

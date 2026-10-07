@@ -78,7 +78,7 @@ export default function App() {
 
       <p className="visually-hidden" aria-live="polite">{summary}</p>
 
-      <main className="grid" style={{ '--cols': cols, '--rows': rows }}>
+      <main className="grid" style={{ '--cols': cols }}>
         {chords.map((chord, i) => (
           <ChordCard key={i} index={i} chord={chord} keyRoot={keyRoot} view={view} scheme={scheme} editing={editing}
                      onChange={(c) => change(i, c)} onRemove={() => remove(i)} canRemove={chords.length > 1} />
