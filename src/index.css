@@ -15,7 +15,6 @@
   --brass-light: #d4aa55;
   --line: rgba(184, 146, 58, 0.28);
   --bold: 'Anton', Impact, 'Arial Narrow', sans-serif;
-  --serif-roman: Georgia, 'Times New Roman', serif;   /* Roman numerals read best in a serif */
   --sans: system-ui, -apple-system, 'Segoe UI', sans-serif;
   --bar: 4em;
 }
@@ -94,7 +93,6 @@ button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
 .progression td { padding: 0.1em 0.9em; text-align: center; line-height: 1.1; }
 .progression td + td { border-left: 0.0625em solid var(--line); }
 .progression .nashville td { font-family: var(--bold); font-size: 2.2em; color: var(--brass-light); }
-.progression .roman td { font-family: var(--serif-roman); font-size: 1.6em; color: var(--cream); }
 .progression .names td { font-family: var(--bold); font-size: 1.4em; color: var(--paper); }
 .progression sup { font-size: 0.6em; vertical-align: 0.7em; line-height: 0; margin-left: 0.04em; }
 
@@ -115,8 +113,6 @@ button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
 .card-head { display: flex; align-items: baseline; justify-content: space-between; gap: 0.5em; }
 .chord-name { font-family: var(--bold); font-size: 3.4em; line-height: 1; }
 .chord-ids { display: flex; flex-direction: column; align-items: flex-end; gap: 0.15em; }
-.chord-roman { display: flex; font-family: var(--serif-roman); font-size: 1.5em; line-height: 1; color: var(--cream); }
-.chord-roman sup { align-self: flex-start; font-size: 0.6em; line-height: 1; margin-left: 0.04em; }
 .chord-number { display: flex; align-items: baseline; font-family: var(--bold); font-size: 2.2em; color: var(--brass-light); }
 /* The number is a dropdown that looks like the number */
 .chord-number select {
@@ -214,11 +210,9 @@ button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
   .card { padding: 0.6em; }
   .chord-name { font-size: 2.4em; }
   .chord-number { font-size: 1.6em; }
-  .chord-roman { font-size: 1.1em; }
   .stage { padding: 0.75em; justify-content: flex-start; }
   .progression { max-width: 100%; overflow-x: auto; justify-content: flex-start; }
   .progression .nashville td { font-size: 1.5em; }
-  .progression .roman td { font-size: 1.15em; }
   .progression .names td { font-size: 1.05em; }
   .progression td { padding: 0.1em 0.5em; }
 }

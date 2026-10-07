@@ -1,19 +1,14 @@
-import { chordName, display, roman } from '../music/theory.js'
+import { chordName, display } from '../music/theory.js'
 
-// The whole progression written out, three ways, one column per chord so they line up.
+// The whole progression written out in Nashville numbers and chord names, a column per chord so they line up.
 export default function Progression({ keyRoot, chords }) {
   const number = (c) => (
     <>
       {c.flat ? '♭' : ''}{c.degree}{c.quality === 'm' ? 'm' : ''}{c.quality === '7' && <sup>7</sup>}
     </>
   )
-  const numeral = (c) => {
-    const r = roman(c)
-    return <>{r.numeral}{r.seven && <sup>7</sup>}</>
-  }
   const rows = [
     ['Nashville', 'nashville', number],
-    ['Roman', 'roman', numeral],
     ['Chords', 'names', (c) => display(chordName(keyRoot, c))],
   ]
 

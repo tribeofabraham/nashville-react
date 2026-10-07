@@ -1,4 +1,4 @@
-import { chordName, chordRoot, display, nashvilleSpoken, roman } from '../music/theory.js'
+import { chordName, chordRoot, display, nashvilleSpoken } from '../music/theory.js'
 import GuitarDiagram from './GuitarDiagram.jsx'
 import Keyboard from './Keyboard.jsx'
 
@@ -20,11 +20,10 @@ export default function ChordCard({ index, chord, keyRoot, view, scheme, editing
   const name = chordName(keyRoot, chord)
   const set = (change) => onChange({ ...chord, ...change })
   const n = index + 1
-  const r = roman(chord)
 
   return (
     <article className="card" aria-label={`Chord ${n}: ${display(name)}, ${nashvilleSpoken(chord)}`}>
-      {/* Three ways to write the chord: its name, its Nashville number (pick another here), its Roman numeral */}
+      {/* The chord's name, and its Nashville number (pick another here) */}
       <header className="card-head">
         <span className="chord-name">{display(name)}</span>
         <span className="chord-ids">
@@ -39,9 +38,6 @@ export default function ChordCard({ index, chord, keyRoot, view, scheme, editing
             </select>
             {chord.quality === 'm' && <span aria-hidden="true">m</span>}
             {chord.quality === '7' && <sup aria-hidden="true">7</sup>}
-          </span>
-          <span className="chord-roman" aria-hidden="true">
-            {r.numeral}{r.seven && <sup>7</sup>}
           </span>
         </span>
       </header>
