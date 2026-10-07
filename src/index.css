@@ -5,7 +5,7 @@
 }
 
 :root {
-  --ink: #12150a;     /* the page: a very dark olive */
+  --ink: #000000;     /* the page: solid black, as the other Tribe of Abraham tools */
   --warm: #1d2111;    /* the cards: a shade lighter */
   --mid: #2b3019;
   --paper: #f4efe6;
