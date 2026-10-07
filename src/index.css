@@ -87,8 +87,12 @@ button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
   gap: 1.2em; padding: 1em;
 }
 .block { display: flex; flex-direction: column; align-items: center; gap: 1.2em; }
-.top { display: flex; align-items: center; justify-content: center; gap: 2em; }
-.top-text { display: flex; flex-direction: column; align-items: center; gap: 0.9em; }
+/* The top: the progression and legend on the left, the wheel on the right, as wide as the cards */
+.top { align-self: stretch; display: flex; align-items: center; justify-content: space-between; gap: 2em; }
+.top-text { display: flex; flex-direction: column; align-items: flex-start; gap: 0.9em; min-width: 0; }
+.top-text .progression { justify-content: flex-start; }
+.top-text .legend { justify-content: flex-start; }
+.top-text .progression th { padding-left: 0; }
 .progression { display: flex; justify-content: center; }
 .progression table { border-collapse: collapse; }
 .progression th {
@@ -196,9 +200,12 @@ button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
 .wheel-pointer { fill: var(--brass-light); }
 
 /* The small wheel on the main screen: outlines only */
-.wheel.outline { width: 7.5em; flex: none; }
+.wheel.outline { width: 9.5em; flex: none; }
 .wheel.outline .wheel-outer { fill: none; stroke: var(--brass); stroke-width: 1.5; }
-.wheel.outline .wheel-inner { fill: none; stroke: var(--line); stroke-width: 1.2; }
+.wheel.outline .wheel-inner { fill: none; stroke: var(--brass); stroke-width: 1.1; }
+.wheel-hub { fill: none; stroke: var(--line); stroke-width: 1; }
+.wheel .divider { stroke: var(--line); stroke-width: 1; }
+.wheel.outline .divider { stroke: rgba(184, 146, 58, 0.45); }
 .wheel.outline .note-hit.current { fill: none; stroke: var(--brass-light); stroke-width: 2.5; }
 .wheel.outline .wheel-note:hover .note-hit:not(.current) { fill: none; stroke: var(--line); stroke-width: 1.5; }
 .wheel.outline .wheel-note-label { font-size: 15px; }
@@ -219,7 +226,7 @@ button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
   .stage { padding: 0.75em; justify-content: flex-start; }
   .block { width: 100%; }
   .top { gap: 0.75em; }
-  .wheel.outline { width: 5.5em; }
+  .wheel.outline { width: 6.5em; }
   .progression { max-width: 100%; overflow-x: auto; justify-content: flex-start; }
   .progression .nashville td { font-size: 1.5em; }
   .progression .names td { font-size: 1.05em; }

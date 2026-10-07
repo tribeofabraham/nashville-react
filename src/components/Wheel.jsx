@@ -8,6 +8,14 @@ const R_OUTER = 100
 const R_NOTE = 82
 const R_MID = 64
 const R_NUMBER = 46
+const R_HUB = 28
+
+// Divider strokes between the slices: halfway between one step and the next.
+const divider = (step, r1, r2) => {
+  const [x1, y1] = at(step + 0.5, r1)
+  const [x2, y2] = at(step + 0.5, r2)
+  return <line key={step} x1={x1} y1={y1} x2={x2} y2={y2} className="divider" />
+}
 
 const at = (step, r) => {
   const a = ((step * 30 - 90) * Math.PI) / 180
@@ -30,6 +38,8 @@ export default function Wheel({ keyRoot, used, onKey, outline = false }) {
     <svg className={outline ? 'wheel outline' : 'wheel'} viewBox="-104 -104 208 208" role="group" aria-label="Key wheel">
       <circle r={R_OUTER} className="wheel-outer" />
       <circle r={R_MID} className="wheel-inner" />
+      <circle r={R_HUB} className="wheel-hub" />
+      {NUMBERS.map((_, step) => divider(step, R_HUB, R_MID))}
 
       {/* Numbers: fixed. Diatonic ones in their colour; those in the progression ringed. */}
       {NUMBERS.map((label, step) => {
@@ -48,6 +58,7 @@ export default function Wheel({ keyRoot, used, onKey, outline = false }) {
 
       {/* Notes: turning. Each label turns back so it stays upright. */}
       <g className="wheel-notes" style={{ transform: `rotate(${deg}deg)` }}>
+        {NOTES.map((_, i) => divider(i, R_MID, R_OUTER))}
         {NOTES.map((note, i) => {
           const [x, y] = at(i, R_NOTE)
           const current = i === keyRoot

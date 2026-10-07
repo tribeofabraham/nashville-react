@@ -111,11 +111,11 @@ export default function App() {
       <main className="stage">
       <div className="block" ref={blockRef}>
       <div className="top">
-        <Wheel keyRoot={keyRoot} used={used} onKey={setKey} outline />
         <div className="top-text">
           <Progression keyRoot={keyRoot} chords={chords} />
           <Legend scheme={scheme} keyRoot={keyRoot} />
         </div>
+        <Wheel keyRoot={keyRoot} used={used} onKey={setKey} outline />
       </div>
 
       <div className="grid" style={{ '--cols': cols, '--card': rows > 1 ? '15em' : '17em' }}>
