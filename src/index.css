@@ -16,7 +16,6 @@
   --line: rgba(184, 146, 58, 0.28);
   --bold: 'Anton', Impact, 'Arial Narrow', sans-serif;
   --sans: system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --bar: 4em;
 }
 
 * { box-sizing: border-box; margin: 0; }
@@ -40,13 +39,15 @@ button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
 
 .app { display: flex; flex-direction: column; height: 100%; }
 
-/* -- the bar -- */
+/* -- the bar: two rows of smaller controls, the wheel beside them as tall as both -- */
 .bar {
-  display: flex; align-items: center; gap: 0.75em; flex-wrap: wrap;
-  min-height: var(--bar); padding: 0.5em 1em;
-  border-bottom: 0.0625em solid var(--line);
+  display: flex; align-items: center; justify-content: space-between; gap: 1.5em;
+  padding: 0.5em 1em; border-bottom: 0.0625em solid var(--line);
+  font-size: 0.85em;                     /* the controls a little smaller, to make room for the wheel */
 }
-.title { font-family: var(--bold); font-weight: 400; font-size: 1.5em; letter-spacing: 0.02em; margin-right: auto; }
+.bar-rows { display: flex; flex-direction: column; gap: 0.5em; min-width: 0; }
+.bar-row { display: flex; align-items: center; gap: 0.6em; flex-wrap: wrap; }
+.title { font-family: var(--bold); font-weight: 400; font-size: 1.6em; letter-spacing: 0.02em; margin-right: 0.6em; }
 .title span { color: var(--brass-light); }
 
 /* The key: a dropdown, brass like the old key button */
@@ -87,12 +88,8 @@ button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
   gap: 1.2em; padding: 1em;
 }
 .block { display: flex; flex-direction: column; align-items: center; gap: 1.2em; }
-/* The top: the progression and legend on the left, the wheel on the right, as wide as the cards */
-.top { align-self: stretch; display: flex; align-items: center; justify-content: space-between; gap: 2em; }
-.top-text { display: flex; flex-direction: column; align-items: flex-start; gap: 0.9em; min-width: 0; }
-.top-text .progression { justify-content: flex-start; }
-.top-text .legend { justify-content: flex-start; }
-.top-text .progression th { padding-left: 0; }
+/* The progression and the colour legend, above the cards */
+.top { display: flex; flex-direction: column; align-items: center; gap: 0.9em; }
 .progression { display: flex; justify-content: center; }
 .progression table { border-collapse: collapse; }
 .progression th {
@@ -200,7 +197,7 @@ button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
 .wheel-pointer { fill: var(--brass-light); }
 
 /* The small wheel on the main screen: outlines only */
-.wheel.outline { width: 9.5em; flex: none; }
+.wheel.outline { width: 7em; flex: none; }
 .wheel.outline .wheel-outer { fill: none; stroke: var(--brass); stroke-width: 1.5; }
 .wheel.outline .wheel-inner { fill: none; stroke: var(--brass); stroke-width: 1.1; }
 .wheel-hub { fill: none; stroke: var(--line); stroke-width: 1; }
@@ -218,6 +215,7 @@ button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
 /* -- phones: the bar wraps, and the chords scroll two to a row at a fixed shape -- */
 @media (max-width: 700px) {
   .title { font-size: 1.2em; width: 100%; }
+  .bar { align-items: flex-start; }
   .scale-toggle { display: none; }
   .grid { width: 100%; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75em; }
   .card { padding: 0.6em; }
@@ -226,7 +224,7 @@ button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
   .stage { padding: 0.75em; justify-content: flex-start; }
   .block { width: 100%; }
   .top { gap: 0.75em; }
-  .wheel.outline { width: 6.5em; }
+  .wheel.outline { width: 5.5em; }
   .progression { max-width: 100%; overflow-x: auto; justify-content: flex-start; }
   .progression .nashville td { font-size: 1.5em; }
   .progression .names td { font-size: 1.05em; }

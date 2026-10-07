@@ -84,26 +84,34 @@ export default function App() {
     <div className="sizer" ref={sizerRef}>
     <div className="scaled" style={{ fontSize: `${scale}rem` }}>
     <div className="app">
+      {/* The bar: two rows of controls on the left, the wheel on the right as tall as both */}
       <header className="bar" ref={barRef}>
-        <h1 className="title">Nashville <span>Notation</span></h1>
-        <label className="key-pick">
-          <span className="key-caption">Key</span>
-          <select value={keyRoot} onChange={(e) => setKey(Number(e.target.value))}>
-            {NOTES.map((n, i) => <option key={n} value={i}>{display(n)}</option>)}
-          </select>
-        </label>
-        <div className="segmented" role="group" aria-label="Transpose">
-          <button type="button" onClick={() => setKey((k) => (k + 11) % 12)} aria-label="Transpose down a half step">−</button>
-          <button type="button" onClick={() => setKey((k) => (k + 1) % 12)} aria-label="Transpose up a half step">+</button>
+        <div className="bar-rows">
+          <div className="bar-row">
+            <h1 className="title">Nashville <span>Notation</span></h1>
+            <label className="key-pick">
+              <span className="key-caption">Key</span>
+              <select value={keyRoot} onChange={(e) => setKey(Number(e.target.value))}>
+                {NOTES.map((n, i) => <option key={n} value={i}>{display(n)}</option>)}
+              </select>
+            </label>
+            <div className="segmented" role="group" aria-label="Transpose">
+              <button type="button" onClick={() => setKey((k) => (k + 11) % 12)} aria-label="Transpose down a half step">−</button>
+              <button type="button" onClick={() => setKey((k) => (k + 1) % 12)} aria-label="Transpose up a half step">+</button>
+            </div>
+          </div>
+          <div className="bar-row">
+            <span id="bar-view" className="visually-hidden">Show</span>
+            <Choice label="bar-view" options={VIEWS} value={view} onChange={setView} />
+            <span id="bar-colour" className="visually-hidden">Colour notes</span>
+            <Choice label="bar-colour" options={SCHEMES} value={scheme} onChange={setScheme} />
+            <button type="button" className="add" onClick={add} disabled={chords.length >= MAX_CHORDS}
+                    aria-label={chords.length >= MAX_CHORDS ? `Add chord (${MAX_CHORDS} is the most)` : 'Add chord'}>+ Chord</button>
+            <button type="button" className="toggle scale-toggle" aria-pressed={scaling === 'fluid'}
+                    onClick={() => setScaling(scaling === 'fluid' ? 'fixed' : 'fluid')}>Auto-scale text</button>
+          </div>
         </div>
-        <span id="bar-view" className="visually-hidden">Show</span>
-        <Choice label="bar-view" options={VIEWS} value={view} onChange={setView} />
-        <span id="bar-colour" className="visually-hidden">Colour notes</span>
-        <Choice label="bar-colour" options={SCHEMES} value={scheme} onChange={setScheme} />
-        <button type="button" className="add" onClick={add} disabled={chords.length >= MAX_CHORDS}
-                aria-label={chords.length >= MAX_CHORDS ? `Add chord (${MAX_CHORDS} is the most)` : 'Add chord'}>+ Chord</button>
-        <button type="button" className="toggle scale-toggle" aria-pressed={scaling === 'fluid'}
-                onClick={() => setScaling(scaling === 'fluid' ? 'fixed' : 'fluid')}>Auto-scale text</button>
+        <Wheel keyRoot={keyRoot} used={used} onKey={setKey} outline />
       </header>
 
       <p className="visually-hidden" aria-live="polite">{summary}</p>
@@ -111,11 +119,8 @@ export default function App() {
       <main className="stage">
       <div className="block" ref={blockRef}>
       <div className="top">
-        <div className="top-text">
-          <Progression keyRoot={keyRoot} chords={chords} />
-          <Legend scheme={scheme} keyRoot={keyRoot} />
-        </div>
-        <Wheel keyRoot={keyRoot} used={used} onKey={setKey} outline />
+        <Progression keyRoot={keyRoot} chords={chords} />
+        <Legend scheme={scheme} keyRoot={keyRoot} />
       </div>
 
       <div className="grid" style={{ '--cols': cols, '--card': rows > 1 ? '15em' : '17em' }}>
