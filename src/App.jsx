@@ -151,7 +151,7 @@ export default function App() {
         </div>
           {mode === 'chords' ? (
             <>
-              <Progression keyRoot={keyRoot} chords={chords} />
+              <Progression keyRoot={keyRoot} chords={chords} onChange={change} />
               <Legend scheme={scheme} keyRoot={keyRoot} />
             </>
           ) : (

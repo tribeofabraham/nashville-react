@@ -4,6 +4,19 @@ import { QUALITIES } from './theory.js'
 
 export const MAX_CHORDS = 8
 
+// The number, flats included, chromatically: what the dropdown on each card offers.
+export const NUMBERS = [
+  [1, false], [2, true], [2, false], [3, true], [3, false], [4, false],
+  [5, true], [5, false], [6, true], [6, false], [7, true], [7, false],
+].map(([degree, flat]) => ({ value: `${flat ? 'b' : ''}${degree}`, label: `${flat ? '♭' : ''}${degree}`, degree, flat }))
+
+// A chord's number as the dropdowns hold it ('b7', '4'), and back.
+export const numberValue = (chord) => `${chord.flat ? 'b' : ''}${chord.degree}`
+export const fromNumberValue = (value) => {
+  const pick = NUMBERS.find((x) => x.value === value)
+  return { degree: pick.degree, flat: pick.flat }
+}
+
 // Amazing Grace in D, as the original opened with: 1, ♭7, 4, 1.
 export const START = {
   key: 2,

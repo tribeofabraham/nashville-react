@@ -1,13 +1,9 @@
 import { chordName, chordRoot, display, nashvilleSpoken, QUALITIES } from '../music/theory.js'
 import NashvilleMark from './NashvilleMark.jsx'
+import { fromNumberValue, NUMBERS, numberValue } from '../music/progression.js'
 import GuitarDiagram from './GuitarDiagram.jsx'
 import Keyboard from './Keyboard.jsx'
 
-// The number, flats included, chromatically: what the dropdown on each card offers.
-const NUMBERS = [
-  [1, false], [2, true], [2, false], [3, true], [3, false], [4, false],
-  [5, true], [5, false], [6, true], [6, false], [7, true], [7, false],
-].map(([degree, flat]) => ({ value: `${flat ? 'b' : ''}${degree}`, label: `${flat ? '♭' : ''}${degree}`, degree, flat }))
 
 
 // One chord of the progression: its name big, its Nashville number, the instrument(s), and its controls.
@@ -27,11 +23,7 @@ export default function ChordCard({ index, chord, keyRoot, view, scheme, onChang
         <span className="chord-name">{display(name)}</span>
         <span className="chord-number">
           <label className="visually-hidden" htmlFor={`number-${n}`}>Chord {n} number</label>
-          <select id={`number-${n}`} value={`${chord.flat ? 'b' : ''}${chord.degree}`}
-                  onChange={(e) => {
-                    const pick = NUMBERS.find((x) => x.value === e.target.value)
-                    set({ degree: pick.degree, flat: pick.flat })
-                  }}>
+          <select id={`number-${n}`} value={numberValue(chord)} onChange={(e) => set(fromNumberValue(e.target.value))}>
             {NUMBERS.map((x) => <option key={x.value} value={x.value}>{x.label}</option>)}
           </select>
           <span aria-hidden="true"><NashvilleMark quality={chord.quality} /></span>
