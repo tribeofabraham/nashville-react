@@ -1,13 +1,14 @@
 import { chordName, chordRoot, display, nashvilleSpoken, QUALITIES } from '../music/theory.js'
 import NashvilleMark from './NashvilleMark.jsx'
 import { fromNumberValue, NUMBERS, numberValue } from '../music/progression.js'
+import BassDiagram from './BassDiagram.jsx'
 import GuitarDiagram from './GuitarDiagram.jsx'
 import Keyboard from './Keyboard.jsx'
 
 
 
 // One chord of the progression: its name big, its Nashville number, the instrument(s), and its controls.
-export default function ChordCard({ index, chord, keyRoot, view, scheme, onChange, onRemove, canRemove }) {
+export default function ChordCard({ index, chord, keyRoot, view, instrument, scheme, onChange, onRemove, canRemove }) {
   const root = chordRoot(keyRoot, chord)
   const name = chordName(keyRoot, chord)
   const set = (change) => onChange({ ...chord, ...change })
@@ -35,7 +36,9 @@ export default function ChordCard({ index, chord, keyRoot, view, scheme, onChang
       </select>
 
       <div className={`instruments ${view}`}>
-        {view !== 'keys' && <GuitarDiagram root={root} quality={chord.quality} scheme={scheme} keyRoot={keyRoot} />}
+        {view !== 'keys' && (instrument === 'bass'
+          ? <BassDiagram root={root} quality={chord.quality} scheme={scheme} keyRoot={keyRoot} />
+          : <GuitarDiagram root={root} quality={chord.quality} scheme={scheme} keyRoot={keyRoot} />)}
         {view !== 'guitar' && <Keyboard root={root} quality={chord.quality} scheme={scheme} keyRoot={keyRoot} />}
       </div>
 

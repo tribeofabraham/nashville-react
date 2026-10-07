@@ -10,7 +10,7 @@ import { chordName, display, MAJOR_SCALE, NOTES, SCALES } from './music/theory.j
 import { usePersisted } from './usePersisted.js'
 import { useSizer } from './sizer.js'
 
-const VIEWS = [['guitar', 'Guitar'], ['keys', 'Keys'], ['both', 'Both']]
+const INSTRUMENTS = [['guitar', 'Guitar'], ['bass', 'Bass']]
 const SCHEMES = [['chord', 'By chord'], ['key', 'By key']]
 const MODES = [['chords', 'Chords'], ['scale', 'Scale']]
 
@@ -67,7 +67,10 @@ function useHeightEm(ref) {
 export default function App() {
   const [keyRoot, setKey] = useState(START.key)
   const [chords, setChords] = useState(START.chords)
-  const [view, setView] = usePersisted('view', 'both', ['guitar', 'keys', 'both'])
+  const [view, setView] = usePersisted('view', 'both', ['guitar', 'keys', 'both'])   // 'guitar': the fretted one
+  const [instrument, setInstrument] = usePersisted('instrument', 'guitar', ['guitar', 'bass'])
+  // The view switch names whichever fretted instrument is chosen: Guitar / Keys / Both, or Bass / Keys / Both.
+  const VIEWS = [['guitar', instrument === 'bass' ? 'Bass' : 'Guitar'], ['keys', 'Keys'], ['both', 'Both']]
   const [scheme, setScheme] = usePersisted('scheme', 'chord', ['chord', 'key'])
   const [mode, setMode] = usePersisted('mode', 'chords', ['chords', 'scale'])
   const [scaleType, setScaleType] = usePersisted('scale', 'major', Object.keys(SCALES))
@@ -149,6 +152,8 @@ export default function App() {
           <div className="bar-row">
             <span id="bar-mode" className="visually-hidden">Show chords or a scale</span>
             <Choice label="bar-mode" options={MODES} value={mode} onChange={setMode} />
+            <span id="bar-instrument" className="visually-hidden">Guitar or bass</span>
+            <Choice label="bar-instrument" options={INSTRUMENTS} value={instrument} onChange={setInstrument} />
             <span id="bar-view" className="visually-hidden">Show</span>
             <Choice label="bar-view" options={VIEWS} value={view} onChange={setView} />
             {mode === 'chords' ? (
@@ -190,11 +195,11 @@ export default function App() {
       <div className="block" ref={blockRef}>
 
       {mode === 'scale' ? (
-        <ScaleView keyRoot={keyRoot} type={scaleType} view={view} />
+        <ScaleView keyRoot={keyRoot} type={scaleType} view={view} instrument={instrument} />
       ) : (
         <div className="grid" style={{ '--cols': cols, '--card': rows > 1 ? '15em' : '17em' }}>
           {chords.map((chord, i) => (
-            <ChordCard key={i} index={i} chord={chord} keyRoot={keyRoot} view={view} scheme={scheme}
+            <ChordCard key={i} index={i} chord={chord} keyRoot={keyRoot} view={view} instrument={instrument} scheme={scheme}
                        onChange={(c) => change(i, c)} onRemove={() => remove(i)} canRemove={chords.length > 1} />
           ))}
         </div>

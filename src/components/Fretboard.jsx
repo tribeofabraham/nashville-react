@@ -1,6 +1,6 @@
 import { labelOn } from '../music/contrast.js'
 
-const TUNING = [4, 9, 2, 7, 11, 4] // E A D G B E, low to high
+const GUITAR_TUNING = [4, 9, 2, 7, 11, 4] // E A D G B E, low to high
 const FRETS = 12
 const FRET_W = 34
 const STRING_GAP = 18
@@ -8,17 +8,19 @@ const MARKERS = [3, 5, 7, 9]
 
 // The neck from the open strings to the 12th fret, high e on top as tab reads, with every note in
 // marks (pitch 0-11 -> { color, label, root }) shown where it falls. Roots get a ring.
-export default function Fretboard({ marks, label }) {
+export default function Fretboard({ marks, label, tuning = GUITAR_TUNING }) {
+  const TUNING = tuning
+  const last = TUNING.length - 1
   const width = FRETS * FRET_W
-  const height = STRING_GAP * 5
-  const y = (string) => (5 - string) * STRING_GAP // string 0 = low E, drawn at the bottom
+  const height = STRING_GAP * last
+  const y = (string) => (last - string) * STRING_GAP // string 0 = the lowest, drawn at the bottom
   const x = (fret) => (fret === 0 ? -FRET_W * 0.45 : (fret - 0.5) * FRET_W)
 
   return (
     <svg className="fretboard" viewBox={`${-FRET_W} -14 ${width + FRET_W + 12} ${height + 40}`} role="img" aria-label={label}>
       {MARKERS.map((f) => <circle key={f} cx={x(f)} cy={height / 2} r={4} className="inlay" />)}
-      <circle cx={x(12)} cy={STRING_GAP * 1.5} r={4} className="inlay" />
-      <circle cx={x(12)} cy={STRING_GAP * 3.5} r={4} className="inlay" />
+      <circle cx={x(12)} cy={height / 2 - STRING_GAP} r={4} className="inlay" />
+      <circle cx={x(12)} cy={height / 2 + STRING_GAP} r={4} className="inlay" />
 
       <line x1={0} x2={0} y1={0} y2={height} className="nut" />
       {Array.from({ length: FRETS }, (_, f) => (

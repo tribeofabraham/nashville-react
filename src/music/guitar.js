@@ -96,3 +96,17 @@ export function guitarShape(root, quality) {
   const baseFret = fretted.length && Math.max(...fretted) > 4 ? Math.min(...fretted) : 1
   return { frets, baseFret }
 }
+
+// -- Bass: the guitar's bottom four strings, E A D G --
+export const BASS_TUNING = [4, 9, 2, 7]
+
+// Where to play a chord on bass, as a beginner learns it: a box of frets around the chord's root on the
+// E or A string (whichever sits lower), every chord tone inside it. { root: { string, fret }, firstFret,
+// lastFret }; firstFret 0 means the open strings are in the box.
+export function bassBox(root) {
+  const onE = { string: 0, fret: (root - 4 + 12) % 12 }
+  const onA = { string: 1, fret: (root - 9 + 12) % 12 }
+  const at = onA.fret < onE.fret ? onA : onE
+  const firstFret = at.fret <= 1 ? 0 : at.fret - 1
+  return { root: at, firstFret, lastFret: firstFret + 4 }
+}

@@ -1,7 +1,7 @@
 // npm test: proves the music before any of it is drawn.
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import { GUITAR, guitarShape } from './guitar.js'
+import { BASS_TUNING, bassBox, GUITAR, guitarShape } from './guitar.js'
 import { currentPreset, PRESETS } from './progression.js'
 import { chordName, chordRoot, chordTones, inKey, nashville, nashvilleSpoken, noteColor, NOTES, QUALITIES, SCALES, scaleNotes } from './theory.js'
 
@@ -137,4 +137,18 @@ test('presets: the chords their labels promise', () => {
     assert.equal(currentPreset(p.key, p.chords), p)
   }
   assert.equal(currentPreset(0, PRESETS[0].chords.slice(0, 3)), undefined)
+})
+
+test('bass: every chord type in every key has a box with all its notes in reach, root on E or A', () => {
+  for (let root = 0; root < 12; root++) {
+    const { root: at, firstFret, lastFret } = bassBox(root)
+    assert.ok([0, 1].includes(at.string), 'root on the E or A string')
+    assert.equal((BASS_TUNING[at.string] + at.fret) % 12, root, `${NOTES[root]}: the box's root is the root`)
+    assert.ok(at.fret >= firstFret && at.fret <= lastFret)
+    for (const quality of Object.keys(QUALITIES)) {
+      const reach = new Set()
+      BASS_TUNING.forEach((open) => { for (let f = firstFret; f <= lastFret; f++) reach.add((open + f) % 12) })
+      for (const t of chordTones(root, quality)) assert.ok(reach.has(t.pitch), `${NOTES[root]}${quality}: ${NOTES[t.pitch]} isn't in the box`)
+    }
+  }
 })

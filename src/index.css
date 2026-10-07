@@ -185,6 +185,8 @@ button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
 .guitar .fret { stroke: var(--muted); stroke-width: 1.2; }
 .guitar .nut { stroke: var(--paper); stroke-width: 4; }
 .guitar .string { stroke: var(--cream); stroke-width: 1.4; }
+.guitar .bass-string { stroke-width: 2.4; }             /* bass strings are thicker */
+.guitar .root-ring { fill: none; stroke-width: 2; }
 .guitar .muted { fill: var(--muted); font-size: 11px; font-weight: 700; }
 .guitar .base-fret { fill: var(--brass-light); font-family: var(--bold); font-size: 14px; }
 .dot-label { font-family: var(--bold); font-size: 10.5px; pointer-events: none; }
