@@ -16,11 +16,15 @@
   --line: rgba(184, 146, 58, 0.28);
   --bold: 'Anton', Impact, 'Arial Narrow', sans-serif;
   --sans: system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --bar: 4rem;
+  --bar: 4em;
 }
 
 * { box-sizing: border-box; margin: 0; }
 html, body, #root { height: 100%; }
+
+/* Everything below is in em: sizer.js sets .scaled's font size from the room the app has, and the
+   whole layout follows it. Card contents also scale with their card (cq units), capped in em. */
+.sizer, .scaled { height: 100%; }
 body { background: var(--ink); color: var(--paper); font-family: var(--sans); }
 
 .visually-hidden {
@@ -31,52 +35,52 @@ body { background: var(--ink); color: var(--paper); font-family: var(--sans); }
 button, select { font: inherit; color: inherit; }
 button { cursor: pointer; }
 button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
-  outline: 0.19rem solid var(--brass-light); outline-offset: 0.12rem;
+  outline: 0.19em solid var(--brass-light); outline-offset: 0.12em;
 }
 
 .app { display: flex; flex-direction: column; height: 100%; }
 
 /* -- the bar -- */
 .bar {
-  display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;
-  min-height: var(--bar); padding: 0.5rem 1rem;
-  border-bottom: 0.0625rem solid var(--line);
+  display: flex; align-items: center; gap: 0.75em; flex-wrap: wrap;
+  min-height: var(--bar); padding: 0.5em 1em;
+  border-bottom: 0.0625em solid var(--line);
 }
-.title { font-family: var(--bold); font-weight: 400; font-size: 1.5rem; letter-spacing: 0.02em; margin-right: auto; }
+.title { font-family: var(--bold); font-weight: 400; font-size: 1.5em; letter-spacing: 0.02em; margin-right: auto; }
 .title span { color: var(--brass-light); }
 
 .key-button {
-  display: flex; align-items: baseline; gap: 0.4rem;
-  padding: 0.25rem 0.9rem; background: var(--brass); color: var(--ink);
-  border: 0; border-radius: 0.4rem;
+  display: flex; align-items: baseline; gap: 0.4em;
+  padding: 0.25em 0.9em; background: var(--brass); color: var(--ink);
+  border: 0; border-radius: 0.4em;
 }
-.key-label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; }
-.key-name { font-family: var(--bold); font-size: 1.6rem; line-height: 1.1; }
+.key-label { font-size: 0.8em; text-transform: uppercase; letter-spacing: 0.1em; }
+.key-name { font-family: var(--bold); font-size: 1.6em; line-height: 1.1; }
 
-.segmented { display: inline-flex; border: 0.0625rem solid var(--brass); border-radius: 0.4rem; overflow: hidden; }
+.segmented { display: inline-flex; border: 0.0625em solid var(--brass); border-radius: 0.4em; overflow: hidden; }
 .segmented button {
-  padding: 0.45rem 0.8rem; background: transparent; border: 0; color: var(--brass-light);
-  font-weight: 600; min-width: 2.5rem;
+  padding: 0.45em 0.8em; background: transparent; border: 0; color: var(--brass-light);
+  font-weight: 600; min-width: 2.5em;
 }
-.segmented button + button { border-left: 0.0625rem solid var(--brass); }
+.segmented button + button { border-left: 0.0625em solid var(--brass); }
 .segmented button[aria-pressed='true'] { background: var(--brass); color: var(--ink); }
 .segmented button:hover:not([aria-pressed='true']) { background: rgba(184, 146, 58, 0.15); }
 
 .add, .settings-button {
-  padding: 0.45rem 0.9rem; background: transparent; color: var(--brass-light);
-  border: 0.0625rem solid var(--brass); border-radius: 0.4rem; font-weight: 600;
+  padding: 0.45em 0.9em; background: transparent; color: var(--brass-light);
+  border: 0.0625em solid var(--brass); border-radius: 0.4em; font-weight: 600;
 }
 .add:disabled { opacity: 0.4; cursor: not-allowed; }
 .edit {
-  padding: 0.45rem 0.9rem; background: transparent; color: var(--brass-light);
-  border: 0.0625rem solid var(--brass); border-radius: 0.4rem; font-weight: 600;
+  padding: 0.45em 0.9em; background: transparent; color: var(--brass-light);
+  border: 0.0625em solid var(--brass); border-radius: 0.4em; font-weight: 600;
 }
 .edit[aria-pressed='true'] { background: var(--brass); color: var(--ink); }
 
 /* -- the chords: one row up to four, two rows after; each card fills its share of the screen -- */
 .grid {
   flex: 1; min-height: 0;
-  display: grid; gap: 0.75rem; padding: 0.75rem;
+  display: grid; gap: 0.75em; padding: 0.75em;
   grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
   grid-template-rows: repeat(var(--rows), minmax(0, 1fr));
 }
@@ -84,33 +88,33 @@ button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
 .card {
   container-type: size;                 /* everything inside scales to the card (cq units) */
   display: flex; flex-direction: column; min-height: 0;
-  background: var(--warm); border: 0.0625rem solid var(--line); border-radius: 0.8rem;
-  padding: clamp(0.4rem, 3cqmin, 1rem);
+  background: var(--warm); border: 0.0625em solid var(--line); border-radius: 0.8em;
+  padding: clamp(0.4em, 3cqmin, 1em);
 }
 
-.card-head { display: flex; align-items: baseline; justify-content: space-between; gap: 0.5rem; }
-.chord-name { font-family: var(--bold); font-size: clamp(1.8rem, 16cqmin, 6rem); line-height: 1; }
-.chord-number { font-family: var(--bold); font-size: clamp(1.1rem, 9cqmin, 3.2rem); color: var(--brass-light); }
+.card-head { display: flex; align-items: baseline; justify-content: space-between; gap: 0.5em; }
+.chord-name { font-family: var(--bold); font-size: clamp(1.8em, 16cqmin, 6em); line-height: 1; }
+.chord-number { font-family: var(--bold); font-size: clamp(1.1em, 9cqmin, 3.2em); color: var(--brass-light); }
 .chord-number sup { font-size: 0.6em; line-height: 0; vertical-align: 0.9em; margin-left: 0.04em; }
 
 .instruments { flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: center; gap: 4cqmin; padding: 2cqmin 0; }
 .instruments svg { width: 100%; min-height: 0; flex: 1; }
 .instruments.both .keys { flex: 0.6; }
 
-.card-controls { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; }
+.card-controls { display: flex; flex-wrap: wrap; gap: 0.4em; align-items: center; }
 .card-controls select {
-  background: var(--ink); border: 0.0625rem solid var(--brass); border-radius: 0.4rem;
-  padding: 0.35rem 0.5rem; font-family: var(--bold); font-size: 1.1rem; color: var(--paper);
+  background: var(--ink); border: 0.0625em solid var(--brass); border-radius: 0.4em;
+  padding: 0.35em 0.5em; font-family: var(--bold); font-size: 1.1em; color: var(--paper);
 }
 .toggle {
-  min-width: 2.5rem; padding: 0.35rem 0.6rem; font-size: 1.1rem; font-weight: 700;
-  background: transparent; color: var(--brass-light); border: 0.0625rem solid var(--brass); border-radius: 0.4rem;
+  min-width: 2.5em; padding: 0.35em 0.6em; font-size: 1.1em; font-weight: 700;
+  background: transparent; color: var(--brass-light); border: 0.0625em solid var(--brass); border-radius: 0.4em;
 }
 .toggle[aria-pressed='true'] { background: var(--brass); color: var(--ink); }
-.card-controls .segmented button { padding: 0.35rem 0.6rem; min-width: 2.3rem; }
+.card-controls .segmented button { padding: 0.35em 0.6em; min-width: 2.3em; }
 .remove {
-  margin-left: auto; padding: 0.35rem 0.6rem; background: transparent; color: var(--muted);
-  border: 0.0625rem solid transparent; border-radius: 0.4rem;
+  margin-left: auto; padding: 0.35em 0.6em; background: transparent; color: var(--muted);
+  border: 0.0625em solid transparent; border-radius: 0.4em;
 }
 .remove:hover { color: var(--paper); border-color: var(--muted); }
 
@@ -129,31 +133,32 @@ button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
 
 /* -- settings overlay -- */
 .settings {
-  margin: auto; max-width: min(34rem, calc(100% - 2rem)); max-height: calc(100% - 2rem);
-  padding: 0; border: 0.0625rem solid var(--line); border-radius: 1rem;
+  margin: auto; max-width: min(34em, calc(100% - 2em)); max-height: calc(100% - 2em);
+  padding: 0; border: 0.0625em solid var(--line); border-radius: 1em;
   background: var(--warm); color: var(--paper);
 }
 .settings::backdrop { background: rgba(13, 11, 9, 0.75); }
-.settings-body { display: flex; flex-direction: column; gap: 1rem; padding: 1.25rem; }
+.settings-body { display: flex; flex-direction: column; gap: 1em; padding: 1.25em; }
 .settings-head { display: flex; justify-content: space-between; align-items: center; }
-.settings-head h2 { font-family: var(--bold); font-weight: 400; font-size: 1.5rem; }
-.close { background: transparent; border: 0; color: var(--muted); font-size: 1.3rem; padding: 0.3rem 0.5rem; }
-.settings-row { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
-.settings-row > label, .settings-row > span { min-width: 4.5rem; color: var(--cream); }
+.settings-head h2 { font-family: var(--bold); font-weight: 400; font-size: 1.5em; }
+.close { background: transparent; border: 0; color: var(--muted); font-size: 1.3em; padding: 0.3em 0.5em; }
+.settings-row { display: flex; align-items: center; gap: 0.75em; flex-wrap: wrap; }
+.settings-row > label, .settings-row > span { min-width: 4.5em; color: var(--cream); }
+.settings-row .scale-toggle { font-weight: 600; }
 .settings-row select {
-  background: var(--ink); border: 0.0625rem solid var(--brass); border-radius: 0.4rem;
-  padding: 0.4rem 0.6rem; font-family: var(--bold); font-size: 1.2rem;
+  background: var(--ink); border: 0.0625em solid var(--brass); border-radius: 0.4em;
+  padding: 0.4em 0.6em; font-family: var(--bold); font-size: 1.2em;
 }
 
-.legend { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 0.6rem 1rem; color: var(--cream); }
-.legend li { display: flex; align-items: center; gap: 0.4rem; }
+.legend { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 0.6em 1em; color: var(--cream); }
+.legend li { display: flex; align-items: center; gap: 0.4em; }
 .swatch {
-  display: inline-grid; place-items: center; width: 1.6rem; height: 1.6rem; border-radius: 50%;
-  font-family: var(--bold); color: #fff; font-size: 0.9rem;
+  display: inline-grid; place-items: center; width: 1.6em; height: 1.6em; border-radius: 50%;
+  font-family: var(--bold); color: #fff; font-size: 0.9em;
 }
 
 /* -- the wheel -- */
-.wheel { width: min(100%, 22rem); align-self: center; }
+.wheel { width: min(100%, 22em); align-self: center; }
 .wheel-outer { fill: var(--ink); stroke: var(--brass); stroke-width: 1.2; }
 .wheel-inner { fill: var(--mid); stroke: var(--line); }
 .wheel-notes { transition: transform 0.6s ease; }
@@ -173,7 +178,7 @@ button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
 
 /* -- phones: the bar wraps, and the chords scroll two to a row at a fixed shape -- */
 @media (max-width: 700px) {
-  .title { font-size: 1.2rem; width: 100%; }
+  .title { font-size: 1.2em; width: 100%; }
   .settings-button { display: none; }
   .grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));

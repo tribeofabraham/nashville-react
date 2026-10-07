@@ -1,11 +1,16 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import ChordCard from './components/ChordCard.jsx'
 import Settings, { Choice } from './components/Settings.jsx'
 import { fromSongMessage, MAX_CHORDS, START } from './music/progression.js'
 import { chordName, display, MAJOR_SCALE, NOTES } from './music/theory.js'
 import { usePersisted } from './usePersisted.js'
+import { useSizer } from './sizer.js'
 
 const VIEWS = [['guitar', 'Guitar'], ['keys', 'Keys'], ['both', 'Both']]
+
+// The sizer (as on the xAPI login): the whole app is in em, scaled to fill the window, width and height,
+// against a 1600 x 900 design. Phones (under 34em wide) stay at normal size with their own layout.
+const SIZER = { designWidth: 1600, designHeight: 900, fitHeight: true, minScale: 0.5, maxScale: 2.5 }
 
 export default function App() {
   const [keyRoot, setKey] = useState(START.key)
@@ -14,6 +19,9 @@ export default function App() {
   const [scheme, setScheme] = usePersisted('scheme', 'chord', ['chord', 'key'])
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [editing, setEditing] = useState(false) // play mode by default: just the chords, as big as they go
+  const [scaling, setScaling] = usePersisted('scaling', 'fluid', ['fluid', 'fixed'])
+  const sizerRef = useRef(null)
+  const scale = useSizer(sizerRef, { ...SIZER, enabled: scaling === 'fluid' })
 
   // Other Tribe of Abraham tools can load a song, as they could into the original.
   useEffect(() => {
@@ -42,6 +50,8 @@ export default function App() {
   const summary = `Key of ${display(NOTES[keyRoot])}: ${chords.map((c) => display(chordName(keyRoot, c))).join(', ')}`
 
   return (
+    <div className="sizer" ref={sizerRef}>
+    <div className="scaled" style={{ fontSize: `${scale}rem` }}>
     <div className="app">
       <header className="bar">
         <h1 className="title">Nashville <span>Notation</span></h1>
@@ -76,7 +86,10 @@ export default function App() {
       </main>
 
       <Settings open={settingsOpen} onClose={() => setSettingsOpen(false)} keyRoot={keyRoot} onKey={setKey} used={used}
-                view={view} onView={setView} scheme={scheme} onScheme={setScheme} />
+                view={view} onView={setView} scheme={scheme} onScheme={setScheme}
+                scaling={scaling} onScaling={setScaling} />
+    </div>
+    </div>
     </div>
   )
 }

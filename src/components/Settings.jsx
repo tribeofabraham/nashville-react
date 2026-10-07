@@ -7,7 +7,7 @@ const SCHEMES = [['chord', 'By chord'], ['key', 'By key']]
 
 // The overlay: the wheel, the key, and how things are shown. A native dialog, so Esc closes it and
 // keyboard focus stays inside while it's open.
-export default function Settings({ open, onClose, keyRoot, onKey, used, view, onView, scheme, onScheme }) {
+export default function Settings({ open, onClose, keyRoot, onKey, used, view, onView, scheme, onScheme, scaling, onScaling }) {
   const dialog = useRef(null)
   useEffect(() => {
     const d = dialog.current
@@ -45,6 +45,14 @@ export default function Settings({ open, onClose, keyRoot, onKey, used, view, on
         <div className="settings-row">
           <span id="scheme-label">Colour</span>
           <Choice label="scheme-label" options={SCHEMES} value={scheme} onChange={onScheme} />
+        </div>
+
+        <div className="settings-row">
+          <span>Size</span>
+          <button type="button" className="toggle scale-toggle" aria-pressed={scaling === 'fluid'}
+                  onClick={() => onScaling(scaling === 'fluid' ? 'fixed' : 'fluid')}>
+            Auto-scale text
+          </button>
         </div>
 
         <ul className="legend" aria-label="What the colours mean">
