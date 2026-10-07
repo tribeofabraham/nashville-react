@@ -33,6 +33,9 @@ body { background: var(--ink); color: var(--paper); font-family: var(--sans); }
 }
 
 button, select { font: inherit; color: inherit; }
+/* Every open dropdown list: light text on the dark of the app. A list takes its text colour from its
+   select but its background from the system (white on Windows), so without this the options vanish. */
+select option { font-family: var(--sans); font-size: 1rem; font-weight: 400; color: var(--paper); background: var(--warm); }
 button { cursor: pointer; }
 button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
   outline: 0.19em solid var(--focus); outline-offset: 0.12em;
@@ -65,7 +68,6 @@ button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
   background: transparent; border: 0; color: var(--ink); cursor: pointer;
   font-family: var(--bold); font-size: 1.6em; line-height: 1.1;
 }
-.key-pick select option { font-family: var(--sans); font-size: 1rem; background: var(--paper); color: var(--ink); }
 .key-pick:focus-within { outline: 0.19em solid var(--focus); outline-offset: 0.12em; }
 
 /* A button group. Not overflow: hidden, which would clip the focus ring: the end buttons round
@@ -138,7 +140,7 @@ button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
 }
 
 /* The name and the number together, in the middle, not pushed to the edges */
-.card-head { display: flex; align-items: baseline; justify-content: center; gap: 0.35em; }
+.card-head { display: flex; align-items: baseline; justify-content: center; gap: 0.9em; }   /* room for focus rings */
 .chord-name { font-family: var(--bold); font-size: 3.4em; line-height: 1; }
 .chord-ids { display: flex; flex-direction: column; align-items: flex-end; gap: 0.15em; }
 .chord-number { display: flex; align-items: baseline; font-family: var(--bold); font-size: 2.2em; color: var(--brass-light); }
@@ -149,10 +151,11 @@ button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
   font: inherit; color: inherit; padding: 0 0.05em; cursor: pointer; text-align: right;
 }
 .chord-number select:hover { border-bottom-style: solid; }
-.chord-number option { font-family: var(--sans); font-size: 1rem; color: var(--paper); background: var(--warm); }
+/* The number's text is big, and a ring sized in its em would be heavy: keep it as thin as the others */
+.chord-number select:focus-visible { outline-width: 0.09em; outline-offset: 0.06em; }
 .chord-number .mark, .progression .mark { margin-left: 0.02em; }
 .chord-type {
-  align-self: center; margin-top: -0.2em;
+  align-self: center; margin-top: 0.35em;
   background: var(--ink); color: var(--cream); border: 0.0625em solid var(--line); border-radius: 0.4em;
   padding: 0.25em 0.5em; font-size: 0.85em; font-weight: 600; cursor: pointer;
 }
