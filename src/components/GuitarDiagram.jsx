@@ -1,4 +1,4 @@
-import { GUITAR } from '../music/guitar.js'
+import { guitarShape } from '../music/guitar.js'
 import { chordTones, inKey, noteColor } from '../music/theory.js'
 
 const TUNING = [4, 9, 2, 7, 11, 4] // E A D G B E, low to high
@@ -6,10 +6,8 @@ const GAP = 20 // between strings, and between frets
 
 // One chord's shape: strings top to bottom on the page are frets, left to right low E to high e, as
 // chord charts are read. Each dot is coloured and labelled by the chosen scheme.
-export default function GuitarDiagram({ root, quality, name, scheme, keyRoot }) {
-  const shape = GUITAR[name]
-  if (!shape) return null
-  const { frets, baseFret } = shape
+export default function GuitarDiagram({ root, quality, scheme, keyRoot }) {
+  const { frets, baseFret } = guitarShape(root, quality)
   const played = frets.filter((f) => f !== null && f > 0)
   const rows = Math.max(4, Math.max(...played, baseFret) - baseFret + 1)
   const tones = chordTones(root, quality)

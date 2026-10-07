@@ -111,7 +111,8 @@ button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
   padding: 0.9em;
 }
 
-.card-head { display: flex; align-items: baseline; justify-content: space-between; gap: 0.5em; }
+/* The name and the number together, in the middle, not pushed to the edges */
+.card-head { display: flex; align-items: baseline; justify-content: center; gap: 0.35em; }
 .chord-name { font-family: var(--bold); font-size: 3.4em; line-height: 1; }
 .chord-ids { display: flex; flex-direction: column; align-items: flex-end; gap: 0.15em; }
 .chord-number { display: flex; align-items: baseline; font-family: var(--bold); font-size: 2.2em; color: var(--brass-light); }
@@ -123,6 +124,13 @@ button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
 }
 .chord-number select:hover { border-bottom-style: solid; }
 .chord-number option { font-family: var(--sans); font-size: 1rem; color: var(--paper); background: var(--warm); }
+.chord-number .mark, .progression .mark { margin-left: 0.02em; }
+.chord-type {
+  align-self: center; margin-top: -0.2em;
+  background: var(--ink); color: var(--cream); border: 0.0625em solid var(--line); border-radius: 0.4em;
+  padding: 0.25em 0.5em; font-size: 0.85em; font-weight: 600; cursor: pointer;
+}
+.chord-type:hover { border-color: var(--brass); }
 .chord-number sup { align-self: flex-start; font-size: 0.6em; line-height: 1; margin: 0.05em 0 0 0.04em; }
 
 .instruments { display: flex; flex-direction: column; gap: 0.8em; }
@@ -140,8 +148,8 @@ button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
 .toggle[aria-pressed='true'] { background: var(--brass); color: var(--ink); }
 .card-controls .segmented button { padding: 0.35em 0.6em; min-width: 2.3em; }
 .remove {
-  margin-left: auto; padding: 0.35em 0.6em; background: transparent; color: var(--muted);
-  border: 0.0625em solid transparent; border-radius: 0.4em;
+  align-self: center; padding: 0.35em 0.8em; background: transparent; color: var(--muted);
+  border: 0.0625em solid var(--muted); border-radius: 0.4em;
 }
 .remove:hover { color: var(--paper); border-color: var(--muted); }
 

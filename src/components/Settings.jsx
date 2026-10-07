@@ -57,8 +57,9 @@ export default function Settings({ open, onClose, keyRoot, onKey, used, view, on
 
         <ul className="legend" aria-label="What the colours mean">
           {scheme === 'chord'
-            ? Object.entries(ROLE_COLORS).map(([role, color]) => (
-                <li key={role}><span className="swatch" style={{ background: color }}>{role === 'R' ? '1' : role}</span>{ROLE_NAMES[role]}</li>
+            ? Object.entries(ROLE_COLORS).filter(([role]) => role !== '9').map(([role, color]) => (
+                <li key={role}><span className="swatch" style={{ background: color }}>{role === 'R' ? '1' : role === '2' ? '2/9' : role}</span>
+                  {role === '2' ? 'second / ninth' : ROLE_NAMES[role]}</li>
               ))
             : Object.entries(DEGREE_COLORS).map(([degree, color]) => (
                 <li key={degree}><span className="swatch" style={{ background: color }}>{degree}</span>{display(NOTES[(keyRoot + [0, 2, 4, 5, 7, 9, 11][degree - 1]) % 12])}</li>

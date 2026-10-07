@@ -1,10 +1,11 @@
 import { chordName, display } from '../music/theory.js'
+import NashvilleMark from './NashvilleMark.jsx'
 
 // The whole progression written out in Nashville numbers and chord names, a column per chord so they line up.
 export default function Progression({ keyRoot, chords }) {
   const number = (c) => (
     <>
-      {c.flat ? '♭' : ''}{c.degree}{c.quality === 'm' ? 'm' : ''}{c.quality === '7' && <sup>7</sup>}
+      {c.flat ? '♭' : ''}{c.degree}<NashvilleMark quality={c.quality} />
     </>
   )
   const rows = [
