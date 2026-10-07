@@ -1,3 +1,5 @@
+import { labelOn } from '../music/contrast.js'
+
 const TUNING = [4, 9, 2, 7, 11, 4] // E A D G B E, low to high
 const FRETS = 12
 const FRET_W = 34
@@ -36,7 +38,7 @@ export default function Fretboard({ marks, label }) {
             <g key={`${s}-${fret}`}>
               {mark.root && <circle cx={x(fret)} cy={y(s)} r={10.5} className="root-ring" style={{ stroke: mark.color }} />}
               <circle cx={x(fret)} cy={y(s)} r={8} fill={mark.color} />
-              <text x={x(fret)} y={y(s)} className="dot-label" textAnchor="middle" dominantBaseline="central">{mark.label}</text>
+              <text x={x(fret)} y={y(s)} className="dot-label" textAnchor="middle" dominantBaseline="central" style={{ fill: labelOn(mark.color) }}>{mark.label}</text>
             </g>
           )
         }),

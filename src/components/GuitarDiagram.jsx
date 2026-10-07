@@ -1,4 +1,5 @@
 import { guitarShape } from '../music/guitar.js'
+import { labelOn } from '../music/contrast.js'
 import { chordTones, inKey, noteColor } from '../music/theory.js'
 
 const TUNING = [4, 9, 2, 7, 11, 4] // E A D G B E, low to high
@@ -41,7 +42,7 @@ export default function GuitarDiagram({ root, quality, scheme, keyRoot }) {
           <g key={s}>
             <circle cx={x(s)} cy={cy} r={open ? 7.5 : 8.6} fill={open ? 'none' : color}
                     stroke={open ? color : 'none'} strokeWidth={open ? 3 : 0} />
-            {!open && <text x={x(s)} y={cy} className="dot-label" textAnchor="middle" dominantBaseline="central">{label(tone)}</text>}
+            {!open && <text x={x(s)} y={cy} className="dot-label" textAnchor="middle" dominantBaseline="central" style={{ fill: labelOn(color) }}>{label(tone)}</text>}
           </g>
         )
       })}

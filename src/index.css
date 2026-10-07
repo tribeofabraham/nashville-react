@@ -164,9 +164,7 @@ button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
   position: absolute; top: 0.35em; right: 0.35em;
   width: 1.8em; height: 1.8em; padding: 0; display: grid; place-items: center;
   background: transparent; color: var(--muted); border: 0; border-radius: 50%; font-size: 0.85em;
-  opacity: 0.55;
 }
-.card:hover .remove, .remove:focus-visible { opacity: 1; }
 .remove:hover { color: var(--paper); background: rgba(255, 255, 255, 0.08); }
 .remove:hover { color: var(--paper); border-color: var(--muted); }
 
@@ -176,12 +174,12 @@ button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
 .guitar .string { stroke: var(--cream); stroke-width: 1.4; }
 .guitar .muted { fill: var(--muted); font-size: 11px; font-weight: 700; }
 .guitar .base-fret { fill: var(--brass-light); font-family: var(--bold); font-size: 14px; }
-.dot-label { fill: #fff; font-family: var(--bold); font-size: 10.5px; pointer-events: none; }
+.dot-label { font-family: var(--bold); font-size: 10.5px; pointer-events: none; }
 
 /* -- keys -- */
 .keys .key.white { fill: var(--cream); stroke: var(--ink); stroke-width: 1; }
 .keys .key.black { fill: #1a1612; stroke: var(--ink); stroke-width: 1; }
-.key-label { fill: #fff; font-family: var(--bold); font-size: 10px; pointer-events: none; }
+.key-label { font-family: var(--bold); font-size: 10px; pointer-events: none; }
 
 /* -- the colour legend -- */
 .legend { list-style: none; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5em 1em; color: var(--cream); font-size: 0.85em; }

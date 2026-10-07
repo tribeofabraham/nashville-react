@@ -1,3 +1,4 @@
+import { labelOn } from '../music/contrast.js'
 import { chordTones, inKey, noteColor, NOTES, display } from '../music/theory.js'
 
 const WHITE = [0, 2, 4, 5, 7, 9, 11]
@@ -36,7 +37,8 @@ export function Piano({ marks, label }) {
         <rect x={x} y={0} width={w} height={h} rx={black ? 2 : 3}
               className={black ? 'key black' : 'key white'} style={mark ? { fill: mark.color } : undefined} />
         {mark && (
-          <text x={x + w / 2} y={h - (black ? 9 : 12)} className="key-label" textAnchor="middle" dominantBaseline="central">
+          <text x={x + w / 2} y={h - (black ? 9 : 12)} className="key-label" textAnchor="middle" dominantBaseline="central"
+                style={{ fill: labelOn(mark.color) }}>
             {mark.label}
           </text>
         )}

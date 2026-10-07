@@ -1,3 +1,4 @@
+import { labelOn } from '../music/contrast.js'
 import { DEGREE_COLORS, MAJOR_SCALE, ROLE_COLORS, ROLE_NAMES, spellInKey } from '../music/theory.js'
 
 // What the colours mean, for the colouring in use.
@@ -13,7 +14,7 @@ export default function Legend({ scheme, keyRoot }) {
   return (
     <ul className="legend" aria-label="What the colours mean">
       {items.map((it) => (
-        <li key={it.mark}><span className="swatch" style={{ background: it.color }}>{it.mark}</span>{it.text}</li>
+        <li key={it.mark}><span className="swatch" style={{ background: it.color, color: labelOn(it.color) }}>{it.mark}</span>{it.text}</li>
       ))}
     </ul>
   )

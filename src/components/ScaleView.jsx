@@ -1,3 +1,4 @@
+import { textOnDark } from '../music/contrast.js'
 import { display, NOTES, SCALES, scaleNotes } from '../music/theory.js'
 import Fretboard from './Fretboard.jsx'
 import { Piano } from './Keyboard.jsx'
@@ -27,7 +28,7 @@ export function ScaleLine({ keyRoot, type }) {
         <tbody>
           <tr className="nashville">
             <th scope="row">Degree</th>
-            {notes.map((n) => <td key={n.degree} style={{ color: n.color }}>{n.degree}</td>)}
+            {notes.map((n) => <td key={n.degree} style={{ color: textOnDark(n.color) }}>{n.degree}</td>)}
           </tr>
           <tr className="names">
             <th scope="row">Notes</th>

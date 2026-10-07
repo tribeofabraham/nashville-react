@@ -1,4 +1,5 @@
 import { useRef } from 'react'
+import { textOnDark } from '../music/contrast.js'
 import { DEGREE_COLORS, display, MAJOR_SCALE, NOTES, OUTSIDE_COLOR } from '../music/theory.js'
 
 // The Nashville numbers around the inside, one per semitone, 1 at the top.
@@ -49,7 +50,7 @@ export default function Wheel({ keyRoot, used, onKey, outline = false }) {
           <g key={label}>
             {used.has(step) && <circle cx={x} cy={y} r={11} className="number-used" />}
             <text x={x} y={y} className="wheel-number" textAnchor="middle" dominantBaseline="central"
-                  style={{ fill: degree >= 0 ? DEGREE_COLORS[degree + 1] : OUTSIDE_COLOR }}>
+                  style={{ fill: textOnDark(degree >= 0 ? DEGREE_COLORS[degree + 1] : OUTSIDE_COLOR) }}>
               {label}
             </text>
           </g>
