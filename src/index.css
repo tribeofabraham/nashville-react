@@ -41,7 +41,7 @@ button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
 
 /* -- the top: the info rows on the left, the wheel on the right as tall as all of them -- */
 .head {
-  display: flex; align-items: stretch; justify-content: space-between; gap: 1.5em;
+  display: flex; align-items: stretch; justify-content: center; gap: 2em;   /* together in the middle, not at the edges */
   padding: 0.6em 1em 0.9em; border-bottom: 0.0625em solid var(--line);
 }
 .info { align-self: flex-start; display: flex; flex-direction: column; align-items: flex-start; gap: 0.7em; min-width: 0; }   /* its own height, never stretched to the wheel's, which is measured from it */
