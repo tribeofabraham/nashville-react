@@ -54,7 +54,7 @@ button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
   padding: 0.25em 0.9em; background: var(--brass); color: var(--ink);
   border: 0; border-radius: 0.4em;
 }
-.key-label { font-size: 0.8em; text-transform: uppercase; letter-spacing: 0.1em; }
+.key-caption { font-size: 0.8em; text-transform: uppercase; letter-spacing: 0.1em; }
 .key-name { font-family: var(--bold); font-size: 1.6em; line-height: 1.1; }
 
 .segmented { display: inline-flex; border: 0.0625em solid var(--brass); border-radius: 0.4em; overflow: hidden; }
@@ -84,6 +84,7 @@ button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
   display: flex; flex-direction: column; align-items: center; justify-content: safe center;
   gap: 1.2em; padding: 1em;
 }
+.block { display: flex; flex-direction: column; align-items: center; gap: 1.2em; }
 .progression { display: flex; justify-content: center; }
 .progression table { border-collapse: collapse; }
 .progression th {
@@ -211,6 +212,7 @@ button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
   .chord-name { font-size: 2.4em; }
   .chord-number { font-size: 1.6em; }
   .stage { padding: 0.75em; justify-content: flex-start; }
+  .block { width: 100%; }
   .progression { max-width: 100%; overflow-x: auto; justify-content: flex-start; }
   .progression .nashville td { font-size: 1.5em; }
   .progression .names td { font-size: 1.05em; }

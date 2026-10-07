@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import ChordCard from './components/ChordCard.jsx'
 import Progression from './components/Progression.jsx'
 import Settings, { Choice } from './components/Settings.jsx'
@@ -9,9 +9,34 @@ import { useSizer } from './sizer.js'
 
 const VIEWS = [['guitar', 'Guitar'], ['keys', 'Keys'], ['both', 'Both']]
 
-// The sizer (as on the xAPI login): the whole app is in em, scaled to fill the window, width and height,
-// against a 1600 x 900 design. Phones (under 34em wide) stay at normal size with their own layout.
-const SIZER = { designWidth: 1600, designHeight: 900, fitHeight: true, minScale: 0.5, maxScale: 2.5 }
+// The sizer (as on the xAPI login): the whole app is in em, scaled to fill the window, width and height.
+// Its design size is the content's own (useContentSize below), so the chords grow until they fill the
+// screen, however many there are and whichever view. Phones (under 34em wide) keep their own layout.
+const SIZER = { fitHeight: true, minScale: 0.5, maxScale: 4 }
+const MARGIN_EM = 1.5 // room kept around the content when it's scaled to fit
+
+// The content's size at 1em: the progression and cards, plus the bar above them. It's all in em, so this
+// doesn't change as the sizer scales it, and measuring it can't feed back into the scale.
+function useContentSize(blockRef, barRef) {
+  const [size, setSize] = useState({ width: 1600, height: 900 })
+  useLayoutEffect(() => {
+    const block = blockRef.current
+    const bar = barRef.current
+    if (!block || !bar) return
+    const measure = () => {
+      const em = parseFloat(getComputedStyle(block).fontSize)
+      const width = Math.round(((block.offsetWidth / em) + 2 * MARGIN_EM) * 16)
+      const height = Math.round((((block.offsetHeight + bar.offsetHeight) / em) + 2 * MARGIN_EM) * 16)
+      setSize((s) => (s.width === width && s.height === height ? s : { width, height }))
+    }
+    measure()
+    const observer = new ResizeObserver(measure)
+    observer.observe(block)
+    observer.observe(bar)
+    return () => observer.disconnect()
+  }, [blockRef, barRef])
+  return size
+}
 
 export default function App() {
   const [keyRoot, setKey] = useState(START.key)
@@ -22,7 +47,11 @@ export default function App() {
   const [editing, setEditing] = useState(false) // play mode by default: just the chords, as big as they go
   const [scaling, setScaling] = usePersisted('scaling', 'fluid', ['fluid', 'fixed'])
   const sizerRef = useRef(null)
-  const scale = useSizer(sizerRef, { ...SIZER, enabled: scaling === 'fluid' })
+  const blockRef = useRef(null)
+  const barRef = useRef(null)
+  const content = useContentSize(blockRef, barRef)
+  const scale = useSizer(sizerRef, { ...SIZER, designWidth: content.width, designHeight: content.height,
+                                     enabled: scaling === 'fluid' })
 
   // Other Tribe of Abraham tools can load a song, as they could into the original.
   useEffect(() => {
@@ -54,11 +83,11 @@ export default function App() {
     <div className="sizer" ref={sizerRef}>
     <div className="scaled" style={{ fontSize: `${scale}rem` }}>
     <div className="app">
-      <header className="bar">
+      <header className="bar" ref={barRef}>
         <h1 className="title">Nashville <span>Notation</span></h1>
         <button type="button" className="key-button" onClick={() => setSettingsOpen(true)}
                 aria-label={`Key of ${display(NOTES[keyRoot])}. Open the key wheel and settings`}>
-          <span className="key-label">Key</span>
+          <span className="key-caption">Key</span>
           <span className="key-name">{display(NOTES[keyRoot])}</span>
         </button>
         <div className="segmented" role="group" aria-label="Transpose">
@@ -80,6 +109,7 @@ export default function App() {
       <p className="visually-hidden" aria-live="polite">{summary}</p>
 
       <main className="stage">
+      <div className="block" ref={blockRef}>
       <Progression keyRoot={keyRoot} chords={chords} />
 
       <div className="grid" style={{ '--cols': cols, '--card': rows > 1 ? '15em' : '17em' }}>
@@ -87,6 +117,7 @@ export default function App() {
           <ChordCard key={i} index={i} chord={chord} keyRoot={keyRoot} view={view} scheme={scheme} editing={editing}
                      onChange={(c) => change(i, c)} onRemove={() => remove(i)} canRemove={chords.length > 1} />
         ))}
+      </div>
       </div>
       </main>
 
