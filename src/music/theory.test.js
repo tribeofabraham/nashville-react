@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { GUITAR } from './guitar.js'
-import { chordName, chordRoot, chordTones, inKey, nashville, nashvilleSpoken, noteColor, NOTES, QUALITIES } from './theory.js'
+import { chordName, chordRoot, chordTones, inKey, nashville, nashvilleSpoken, noteColor, NOTES, QUALITIES, roman } from './theory.js'
 
 const D = NOTES.indexOf('D')
 const AMAZING_GRACE = [
@@ -16,6 +16,13 @@ test('Amazing Grace in D is D, C, G, D', () => {
   assert.deepEqual(AMAZING_GRACE.map((c) => chordName(D, c)), ['D', 'C', 'G', 'D'])
   assert.deepEqual(AMAZING_GRACE.map(nashville), ['1', '♭7', '4', '1'])
   assert.equal(nashvilleSpoken(AMAZING_GRACE[1]), 'flat seven')
+})
+
+test('Roman numerals: capitals major, lower case minor, the 7 apart', () => {
+  assert.deepEqual(AMAZING_GRACE.map((c) => roman(c).numeral), ['I', '♭VII', 'IV', 'I'])
+  assert.deepEqual(roman({ degree: 2, flat: false, quality: 'm' }), { numeral: 'ii', seven: false })
+  assert.deepEqual(roman({ degree: 5, flat: false, quality: '7' }), { numeral: 'V', seven: true })
+  assert.deepEqual(roman({ degree: 6, flat: false, quality: 'm' }), { numeral: 'vi', seven: false })
 })
 
 test('the same numbers in every key are the same distance apart', () => {

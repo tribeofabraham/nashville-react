@@ -40,6 +40,17 @@ export function nashville(chord) {
   return `${chord.flat ? '♭' : ''}${chord.degree}${chord.quality}`
 }
 
+// The same chord in Roman numerals: capitals for major and 7th chords, lower case for minor.
+// The 7 is returned apart, to be raised: { numeral: '♭VII', seven: false }, { numeral: 'V', seven: true }.
+const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII']
+export function roman(chord) {
+  const numeral = ROMAN[chord.degree - 1]
+  return {
+    numeral: `${chord.flat ? '♭' : ''}${chord.quality === 'm' ? numeral.toLowerCase() : numeral}`,
+    seven: chord.quality === '7',
+  }
+}
+
 // Said aloud, for screen readers: "flat seven", "four minor", "five seven".
 const WORDS = ['one', 'two', 'three', 'four', 'five', 'six', 'seven']
 export function nashvilleSpoken(chord) {

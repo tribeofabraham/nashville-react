@@ -1,4 +1,4 @@
-import { chordName, chordRoot, display, nashvilleSpoken } from '../music/theory.js'
+import { chordName, chordRoot, display, nashvilleSpoken, roman } from '../music/theory.js'
 import GuitarDiagram from './GuitarDiagram.jsx'
 import Keyboard from './Keyboard.jsx'
 
@@ -20,23 +20,29 @@ export default function ChordCard({ index, chord, keyRoot, view, scheme, editing
   const name = chordName(keyRoot, chord)
   const set = (change) => onChange({ ...chord, ...change })
   const n = index + 1
+  const r = roman(chord)
 
   return (
     <article className="card" aria-label={`Chord ${n}: ${display(name)}, ${nashvilleSpoken(chord)}`}>
+      {/* Three ways to write the chord: its name, its Nashville number (pick another here), its Roman numeral */}
       <header className="card-head">
         <span className="chord-name">{display(name)}</span>
-        {/* The number is the control: pick another straight from the card */}
-        <span className="chord-number">
-          <label className="visually-hidden" htmlFor={`number-${n}`}>Chord {n} number</label>
-          <select id={`number-${n}`} value={`${chord.flat ? 'b' : ''}${chord.degree}`}
-                  onChange={(e) => {
-                    const pick = NUMBERS.find((x) => x.value === e.target.value)
-                    set({ degree: pick.degree, flat: pick.flat })
-                  }}>
-            {NUMBERS.map((x) => <option key={x.value} value={x.value}>{x.label}</option>)}
-          </select>
-          {chord.quality === 'm' && <span aria-hidden="true">m</span>}
-          {chord.quality === '7' && <sup aria-hidden="true">7</sup>}
+        <span className="chord-ids">
+          <span className="chord-number">
+            <label className="visually-hidden" htmlFor={`number-${n}`}>Chord {n} number</label>
+            <select id={`number-${n}`} value={`${chord.flat ? 'b' : ''}${chord.degree}`}
+                    onChange={(e) => {
+                      const pick = NUMBERS.find((x) => x.value === e.target.value)
+                      set({ degree: pick.degree, flat: pick.flat })
+                    }}>
+              {NUMBERS.map((x) => <option key={x.value} value={x.value}>{x.label}</option>)}
+            </select>
+            {chord.quality === 'm' && <span aria-hidden="true">m</span>}
+            {chord.quality === '7' && <sup aria-hidden="true">7</sup>}
+          </span>
+          <span className="chord-roman" aria-hidden="true">
+            {r.numeral}{r.seven && <sup>7</sup>}
+          </span>
         </span>
       </header>
 
