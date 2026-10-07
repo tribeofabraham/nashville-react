@@ -16,7 +16,8 @@ const at = (step, r) => {
 
 // The keys turn around the numbers: the key you're in sits at the top, over 1.
 // Pick a note on the outer ring to change key.
-export default function Wheel({ keyRoot, used, onKey }) {
+// outline: the small version on the main screen, drawn as outlines rather than filled rings.
+export default function Wheel({ keyRoot, used, onKey, outline = false }) {
   // Keep turning the short way round, so B to C is one step, not eleven back.
   const turn = useRef({ key: keyRoot, deg: -keyRoot * 30 })
   if (turn.current.key !== keyRoot) {
@@ -26,7 +27,7 @@ export default function Wheel({ keyRoot, used, onKey }) {
   const deg = turn.current.deg
 
   return (
-    <svg className="wheel" viewBox="-104 -104 208 208" role="group" aria-label="Key wheel">
+    <svg className={outline ? 'wheel outline' : 'wheel'} viewBox="-104 -104 208 208" role="group" aria-label="Key wheel">
       <circle r={R_OUTER} className="wheel-outer" />
       <circle r={R_MID} className="wheel-inner" />
 

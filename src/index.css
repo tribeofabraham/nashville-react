@@ -81,6 +81,7 @@ button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
   gap: 1.2em; padding: 1em;
 }
 .block { display: flex; flex-direction: column; align-items: center; gap: 1.2em; }
+.top { display: flex; align-items: center; justify-content: center; gap: 2em; }
 .progression { display: flex; justify-content: center; }
 .progression table { border-collapse: collapse; }
 .progression th {
@@ -205,6 +206,15 @@ button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
 .number-used { fill: none; stroke: var(--brass-light); stroke-width: 1.6; }
 .wheel-pointer { fill: var(--brass-light); }
 
+/* The small wheel on the main screen: outlines only */
+.wheel.outline { width: 7.5em; flex: none; }
+.wheel.outline .wheel-outer { fill: none; stroke: var(--brass); stroke-width: 1.5; }
+.wheel.outline .wheel-inner { fill: none; stroke: var(--line); stroke-width: 1.2; }
+.wheel.outline .note-hit.current { fill: none; stroke: var(--brass-light); stroke-width: 2.5; }
+.wheel.outline .wheel-note:hover .note-hit:not(.current) { fill: none; stroke: var(--line); stroke-width: 1.5; }
+.wheel.outline .wheel-note-label { font-size: 15px; }
+.wheel.outline .wheel-number { font-size: 14px; }
+
 @media (prefers-reduced-motion: reduce) {
   .wheel-notes, .wheel-notes text { transition: none; }
 }
@@ -219,6 +229,8 @@ button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
   .chord-number { font-size: 1.6em; }
   .stage { padding: 0.75em; justify-content: flex-start; }
   .block { width: 100%; }
+  .top { gap: 0.75em; }
+  .wheel.outline { width: 5.5em; }
   .progression { max-width: 100%; overflow-x: auto; justify-content: flex-start; }
   .progression .nashville td { font-size: 1.5em; }
   .progression .names td { font-size: 1.05em; }

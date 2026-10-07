@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import ChordCard from './components/ChordCard.jsx'
 import Progression from './components/Progression.jsx'
+import Wheel from './components/Wheel.jsx'
 import Settings, { Choice } from './components/Settings.jsx'
 import { fromSongMessage, MAX_CHORDS, START } from './music/progression.js'
 import { chordName, display, MAJOR_SCALE, NOTES } from './music/theory.js'
@@ -104,7 +105,10 @@ export default function App() {
 
       <main className="stage">
       <div className="block" ref={blockRef}>
-      <Progression keyRoot={keyRoot} chords={chords} />
+      <div className="top">
+        <Wheel keyRoot={keyRoot} used={used} onKey={setKey} outline />
+        <Progression keyRoot={keyRoot} chords={chords} />
+      </div>
 
       <div className="grid" style={{ '--cols': cols, '--card': rows > 1 ? '15em' : '17em' }}>
         {chords.map((chord, i) => (
