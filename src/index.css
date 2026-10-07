@@ -71,11 +71,7 @@ button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
   border: 0.0625em solid var(--brass); border-radius: 0.4em; font-weight: 600;
 }
 .add:disabled { opacity: 0.4; cursor: not-allowed; }
-.edit {
-  padding: 0.45em 0.9em; background: transparent; color: var(--brass-light);
-  border: 0.0625em solid var(--brass); border-radius: 0.4em; font-weight: 600;
-}
-.edit[aria-pressed='true'] { background: var(--brass); color: var(--ink); }
+
 
 /* -- the progression, written out three ways -- */
 /* The progression and the cards, together as one block, centred in the space under the bar */
@@ -106,6 +102,7 @@ button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
 }
 
 .card {
+  position: relative;
   display: flex; flex-direction: column; gap: 0.6em;
   background: var(--warm); border: 0.0625em solid var(--line); border-radius: 0.8em;
   padding: 0.9em;
@@ -136,21 +133,15 @@ button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
 .instruments { display: flex; flex-direction: column; gap: 0.8em; }
 .instruments svg { width: 100%; height: auto; display: block; }
 
-.card-controls { display: flex; flex-wrap: wrap; gap: 0.4em; align-items: center; }
-.card-controls select {
-  background: var(--ink); border: 0.0625em solid var(--brass); border-radius: 0.4em;
-  padding: 0.35em 0.5em; font-family: var(--bold); font-size: 1.1em; color: var(--paper);
-}
-.toggle {
-  min-width: 2.5em; padding: 0.35em 0.6em; font-size: 1.1em; font-weight: 700;
-  background: transparent; color: var(--brass-light); border: 0.0625em solid var(--brass); border-radius: 0.4em;
-}
-.toggle[aria-pressed='true'] { background: var(--brass); color: var(--ink); }
-.card-controls .segmented button { padding: 0.35em 0.6em; min-width: 2.3em; }
+/* Remove: a small ✕ in the card's corner, quiet until pointed at */
 .remove {
-  align-self: center; padding: 0.35em 0.8em; background: transparent; color: var(--muted);
-  border: 0.0625em solid var(--muted); border-radius: 0.4em;
+  position: absolute; top: 0.35em; right: 0.35em;
+  width: 1.8em; height: 1.8em; padding: 0; display: grid; place-items: center;
+  background: transparent; color: var(--muted); border: 0; border-radius: 50%; font-size: 0.85em;
+  opacity: 0.55;
 }
+.card:hover .remove, .remove:focus-visible { opacity: 1; }
+.remove:hover { color: var(--paper); background: rgba(255, 255, 255, 0.08); }
 .remove:hover { color: var(--paper); border-color: var(--muted); }
 
 /* -- guitar -- */

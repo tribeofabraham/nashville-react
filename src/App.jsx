@@ -44,7 +44,6 @@ export default function App() {
   const [view, setView] = usePersisted('view', 'both', ['guitar', 'keys', 'both'])
   const [scheme, setScheme] = usePersisted('scheme', 'chord', ['chord', 'key'])
   const [settingsOpen, setSettingsOpen] = useState(false)
-  const [editing, setEditing] = useState(false) // play mode by default: just the chords, as big as they go
   const [scaling, setScaling] = usePersisted('scaling', 'fluid', ['fluid', 'fixed'])
   const sizerRef = useRef(null)
   const blockRef = useRef(null)
@@ -96,13 +95,8 @@ export default function App() {
         </div>
         <span id="bar-view" className="visually-hidden">Show</span>
         <Choice label="bar-view" options={VIEWS} value={view} onChange={setView} />
-        <button type="button" className="edit" aria-pressed={editing} onClick={() => setEditing((e) => !e)}>
-          {editing ? 'Done' : 'Edit chords'}
-        </button>
-        {editing && (
-          <button type="button" className="add" onClick={add} disabled={chords.length >= MAX_CHORDS}
-                  aria-label={chords.length >= MAX_CHORDS ? `Add chord (${MAX_CHORDS} is the most)` : 'Add chord'}>+ Chord</button>
-        )}
+        <button type="button" className="add" onClick={add} disabled={chords.length >= MAX_CHORDS}
+                aria-label={chords.length >= MAX_CHORDS ? `Add chord (${MAX_CHORDS} is the most)` : 'Add chord'}>+ Chord</button>
         <button type="button" className="settings-button" onClick={() => setSettingsOpen(true)}>Settings</button>
       </header>
 
@@ -114,7 +108,7 @@ export default function App() {
 
       <div className="grid" style={{ '--cols': cols, '--card': rows > 1 ? '15em' : '17em' }}>
         {chords.map((chord, i) => (
-          <ChordCard key={i} index={i} chord={chord} keyRoot={keyRoot} view={view} scheme={scheme} editing={editing}
+          <ChordCard key={i} index={i} chord={chord} keyRoot={keyRoot} view={view} scheme={scheme}
                      onChange={(c) => change(i, c)} onRemove={() => remove(i)} canRemove={chords.length > 1} />
         ))}
       </div>

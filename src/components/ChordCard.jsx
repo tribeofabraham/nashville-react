@@ -11,7 +11,7 @@ const NUMBERS = [
 
 
 // One chord of the progression: its name big, its Nashville number, the instrument(s), and its controls.
-export default function ChordCard({ index, chord, keyRoot, view, scheme, editing, onChange, onRemove, canRemove }) {
+export default function ChordCard({ index, chord, keyRoot, view, scheme, onChange, onRemove, canRemove }) {
   const root = chordRoot(keyRoot, chord)
   const name = chordName(keyRoot, chord)
   const set = (change) => onChange({ ...chord, ...change })
@@ -20,6 +20,9 @@ export default function ChordCard({ index, chord, keyRoot, view, scheme, editing
   return (
     <article className="card" aria-label={`Chord ${n}: ${display(name)}, ${nashvilleSpoken(chord)}`}>
       {/* The chord's name and its Nashville number side by side; pick another number or chord type below */}
+      {canRemove && (
+        <button type="button" className="remove" onClick={onRemove} aria-label={`Remove chord ${n}`}>✕</button>
+      )}
       <header className="card-head">
         <span className="chord-name">{display(name)}</span>
         <span className="chord-number">
@@ -44,9 +47,7 @@ export default function ChordCard({ index, chord, keyRoot, view, scheme, editing
         {view !== 'guitar' && <Keyboard root={root} quality={chord.quality} scheme={scheme} keyRoot={keyRoot} />}
       </div>
 
-      {editing && canRemove && (
-        <button type="button" className="remove" onClick={onRemove}>Remove chord {n}</button>
-      )}
+
     </article>
   )
 }
