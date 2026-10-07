@@ -5,7 +5,7 @@ import ScaleView, { ScaleLine } from './components/ScaleView.jsx'
 import Wheel from './components/Wheel.jsx'
 import Choice from './components/Choice.jsx'
 import Legend from './components/Legend.jsx'
-import { fromSongMessage, MAX_CHORDS, START } from './music/progression.js'
+import { currentPreset, fromSongMessage, MAX_CHORDS, PRESETS, START } from './music/progression.js'
 import { chordName, display, MAJOR_SCALE, NOTES, SCALES } from './music/theory.js'
 import { usePersisted } from './usePersisted.js'
 import { useSizer } from './sizer.js'
@@ -140,6 +140,17 @@ export default function App() {
             <Choice label="bar-view" options={VIEWS} value={view} onChange={setView} />
             {mode === 'chords' ? (
               <>
+                <label className="preset-pick">
+                  <span className="visually-hidden">Preset songs</span>
+                  <select value={currentPreset(keyRoot, chords)?.id ?? ''}
+                          onChange={(e) => {
+                            const p = PRESETS.find((x) => x.id === e.target.value)
+                            if (p) { setKey(p.key); setChords(p.chords) }
+                          }}>
+                    <option value="" disabled>Presets</option>
+                    {PRESETS.map((p) => <option key={p.id} value={p.id} title={p.song}>{p.label}</option>)}
+                  </select>
+                </label>
                 <span id="bar-colour" className="visually-hidden">Colour notes</span>
                 <Choice label="bar-colour" options={SCHEMES} value={scheme} onChange={setScheme} />
                 <button type="button" className="add" onClick={add} disabled={chords.length >= MAX_CHORDS}

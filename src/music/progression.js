@@ -17,7 +17,8 @@ export const fromNumberValue = (value) => {
   return { degree: pick.degree, flat: pick.flat }
 }
 
-// Amazing Grace in D, as the original opened with: 1, ♭7, 4, 1.
+// What the app opens with: the original's 1, ♭7, 4, 1 in D. (The original called it Amazing Grace;
+// Amazing Grace is the D - 1 4 1 5 preset below.)
 export const START = {
   key: 2,
   chords: [
@@ -26,6 +27,24 @@ export const START = {
     { degree: 4, flat: false, quality: '' },
     { degree: 1, flat: false, quality: '' },
   ],
+}
+
+// Presets: songs to walk beginners through the basic chords, labelled by key and progression the way
+// they read in the dropdown ("C - 1 5 6m 4"). A minor-key song is numbered from its own minor chord
+// (1m), as Nashville charts do: Watchtower in Bm is 1m ♭7 ♭6 ♭7, played in the key of B.
+const C = (degree, quality = '', flat = false) => ({ degree, flat, quality })
+export const PRESETS = [
+  { id: 'let-it-be', label: 'C - 1 5 6m 4', song: 'Let It Be', key: 0, chords: [C(1), C(5), C(6, 'm'), C(4)] },
+  { id: 'g-1-3m-4-5', label: 'G - 1 3m 4 5', song: 'Too many to name', key: 7, chords: [C(1), C(3, 'm'), C(4), C(5)] },
+  { id: 'watchtower', label: 'Bm - 1m ♭7 ♭6 ♭7', song: 'All Along the Watchtower', key: 11,
+    chords: [C(1, 'm'), C(7, '', true), C(6, '', true), C(7, '', true)] },
+  { id: 'amazing-grace', label: 'D - 1 4 1 5', song: 'Amazing Grace', key: 2, chords: [C(1), C(4), C(1), C(5)] },
+]
+
+// The preset the screen is showing right now, if it's one exactly.
+export function currentPreset(key, chords) {
+  const same = (a, b) => a.degree === b.degree && a.flat === b.flat && a.quality === b.quality
+  return PRESETS.find((p) => p.key === key && p.chords.length === chords.length && p.chords.every((c, i) => same(c, chords[i])))
 }
 
 // The original's song message, so other Tribe of Abraham tools can load a song the same way:

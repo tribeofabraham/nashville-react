@@ -2,6 +2,7 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { GUITAR, guitarShape } from './guitar.js'
+import { currentPreset, PRESETS } from './progression.js'
 import { chordName, chordRoot, chordTones, inKey, nashville, nashvilleSpoken, noteColor, NOTES, QUALITIES, SCALES, scaleNotes } from './theory.js'
 
 const D = NOTES.indexOf('D')
@@ -122,4 +123,18 @@ test('scales: the right notes in the right keys', () => {
     assert.equal(s.steps.length, s.degrees.length, `${type}: a degree for every step`)
     assert.equal(scaleNotes(0, type)[0].color, '#c02727', `${type}: the root is red`)
   }
+})
+
+test('presets: the chords their labels promise', () => {
+  const names = (id) => { const p = PRESETS.find((x) => x.id === id); return p.chords.map((c) => chordName(p.key, c)).join(' ') }
+  assert.equal(names('let-it-be'), 'C G Am F')
+  assert.equal(names('g-1-3m-4-5'), 'G Bm C D')
+  assert.equal(names('watchtower'), 'Bm A G A')
+  assert.equal(names('amazing-grace'), 'D G D A')
+  for (const p of PRESETS) {
+    // the label is the key's chord, then the numbers as they read on the cards
+    assert.equal(p.label, `${chordName(p.key, p.chords[0]).replace(/[^A-G♭♯]+$/, p.chords[0].quality === 'm' ? 'm' : '')} - ${p.chords.map(nashville).join(' ')}`)
+    assert.equal(currentPreset(p.key, p.chords), p)
+  }
+  assert.equal(currentPreset(0, PRESETS[0].chords.slice(0, 3)), undefined)
 })

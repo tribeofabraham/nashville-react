@@ -217,7 +217,7 @@ button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
 .fretboard .fret-number { fill: var(--muted); font-family: var(--bold); font-size: 11px; }
 .fretboard .root-ring { fill: none; stroke-width: 2; }
 .fretboard .dot-label { font-size: 9.5px; }
-.scale-pick select {
+.preset-pick select, .scale-pick select {
   background: var(--ink); color: var(--brass-light); border: 0.0625em solid var(--brass); border-radius: 0.4em;
   padding: 0.45em 0.6em; font-weight: 600; cursor: pointer;
 }
