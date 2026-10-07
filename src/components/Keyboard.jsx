@@ -7,15 +7,13 @@ const H = 76
 const BW = 12
 const BH = 48
 
-// Two octaves from C, with the chord played from its root upwards and each note coloured and labelled.
+// Two octaves from C, with every key that's a note of the chord coloured and labelled.
 export default function Keyboard({ root, quality, scheme, keyRoot }) {
   const tones = chordTones(root, quality)
-  // Stack the chord upward from the root: each tone the first time it comes after the one before.
   const lit = new Map()
-  let at = root
-  for (const tone of tones) {
-    while (at % 12 !== tone.pitch) at++
-    lit.set(at, tone)
+  for (let n = 0; n < 24; n++) {
+    const tone = tones.find((t) => t.pitch === n % 12)
+    if (tone) lit.set(n, tone)
   }
   const label = (tone) => (scheme === 'chord' ? (tone.role === 'R' ? '1' : tone.role) : inKey(keyRoot, tone.pitch).label)
 
