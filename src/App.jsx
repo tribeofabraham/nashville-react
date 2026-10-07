@@ -41,6 +41,19 @@ function useContentSize(blockRef, barRef) {
   return size
 }
 
+// An element's height in px, kept up to date.
+function useHeight(ref) {
+  const [height, setHeight] = useState(0)
+  useLayoutEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const observer = new ResizeObserver(() => setHeight(el.offsetHeight))
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [ref])
+  return height
+}
+
 export default function App() {
   const [keyRoot, setKey] = useState(START.key)
   const [chords, setChords] = useState(START.chords)
@@ -50,6 +63,8 @@ export default function App() {
   const sizerRef = useRef(null)
   const blockRef = useRef(null)
   const barRef = useRef(null)
+  const infoRef = useRef(null)
+  const infoHeight = useHeight(infoRef)  // the wheel is as tall as the info rows beside it
   const content = useContentSize(blockRef, barRef)
   const scale = useSizer(sizerRef, { ...SIZER, designWidth: content.width, designHeight: content.height,
                                      enabled: scaling === 'fluid' })
@@ -84,8 +99,10 @@ export default function App() {
     <div className="sizer" ref={sizerRef}>
     <div className="scaled" style={{ fontSize: `${scale}rem` }}>
     <div className="app">
-      {/* The bar: two rows of controls on the left, the wheel on the right as tall as both */}
-      <header className="bar" ref={barRef}>
+      {/* The top: the info rows (two rows of controls, the progression, the colour legend) on the left,
+          the wheel on the right as tall as all of them */}
+      <header className="head" ref={barRef}>
+        <div className="info" ref={infoRef}>
         <div className="bar-rows">
           <div className="bar-row">
             <h1 className="title">Nashville <span>Notation</span></h1>
@@ -111,17 +128,18 @@ export default function App() {
                     onClick={() => setScaling(scaling === 'fluid' ? 'fixed' : 'fluid')}>Auto-scale text</button>
           </div>
         </div>
-        <Wheel keyRoot={keyRoot} used={used} onKey={setKey} outline />
+          <Progression keyRoot={keyRoot} chords={chords} />
+          <Legend scheme={scheme} keyRoot={keyRoot} />
+        </div>
+        <div className="head-wheel" style={{ width: infoHeight, height: infoHeight }}>
+          <Wheel keyRoot={keyRoot} used={used} onKey={setKey} outline />
+        </div>
       </header>
 
       <p className="visually-hidden" aria-live="polite">{summary}</p>
 
       <main className="stage">
       <div className="block" ref={blockRef}>
-      <div className="top">
-        <Progression keyRoot={keyRoot} chords={chords} />
-        <Legend scheme={scheme} keyRoot={keyRoot} />
-      </div>
 
       <div className="grid" style={{ '--cols': cols, '--card': rows > 1 ? '15em' : '17em' }}>
         {chords.map((chord, i) => (
