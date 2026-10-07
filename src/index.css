@@ -14,6 +14,7 @@
   --brass: #b8923a;
   --brass-light: #d4aa55;
   --line: rgba(184, 146, 58, 0.28);
+  --focus: #ffffff;   /* focus rings: white, offset onto the dark page so they read on brass buttons too */
   --bold: 'Anton', Impact, 'Arial Narrow', sans-serif;
   --sans: system-ui, -apple-system, 'Segoe UI', sans-serif;
 }
@@ -34,7 +35,7 @@ body { background: var(--ink); color: var(--paper); font-family: var(--sans); }
 button, select { font: inherit; color: inherit; }
 button { cursor: pointer; }
 button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
-  outline: 0.19em solid var(--brass-light); outline-offset: 0.12em;
+  outline: 0.19em solid var(--focus); outline-offset: 0.12em;
 }
 
 .app { display: flex; flex-direction: column; height: 100%; }
@@ -65,9 +66,14 @@ button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
   font-family: var(--bold); font-size: 1.6em; line-height: 1.1;
 }
 .key-pick select option { font-family: var(--sans); font-size: 1rem; background: var(--paper); color: var(--ink); }
-.key-pick:focus-within { outline: 0.19em solid var(--brass-light); outline-offset: 0.12em; }
+.key-pick:focus-within { outline: 0.19em solid var(--focus); outline-offset: 0.12em; }
 
-.segmented { display: inline-flex; border: 0.0625em solid var(--brass); border-radius: 0.4em; overflow: hidden; }
+/* A button group. Not overflow: hidden, which would clip the focus ring: the end buttons round
+   their own corners instead, and a focused button sits above its neighbours so its ring shows whole. */
+.segmented { display: inline-flex; border: 0.0625em solid var(--brass); border-radius: 0.4em; }
+.segmented button:first-child { border-radius: 0.34em 0 0 0.34em; }
+.segmented button:last-child { border-radius: 0 0.34em 0.34em 0; }
+.segmented button:focus-visible { position: relative; z-index: 1; }
 .segmented button {
   padding: 0.45em 0.8em; background: transparent; border: 0; color: var(--brass-light);
   font-weight: 600; min-width: 2.5em;
@@ -109,7 +115,7 @@ button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
   position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;
   appearance: none; -webkit-appearance: none; border: 0; font-size: 1rem;
 }
-.pick:focus-within { outline: 0.12em solid var(--brass-light); outline-offset: 0.1em; border-radius: 0.1em; }
+.pick:focus-within { outline: 0.12em solid var(--focus); outline-offset: 0.1em; border-radius: 0.1em; }
 .progression sup { font-size: 0.6em; vertical-align: 0.7em; line-height: 0; margin-left: 0.04em; }
 
 /* -- the chords: fixed-size cards (in em, so the sizer scales them), centred; one row up to four,
