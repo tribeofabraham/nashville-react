@@ -133,6 +133,13 @@ button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
 .instruments { display: flex; flex-direction: column; gap: 0.8em; }
 .instruments svg { width: 100%; height: auto; display: block; }
 
+/* An on/off button (Settings' Auto-scale text) */
+.toggle {
+  min-width: 2.5em; padding: 0.35em 0.6em; font-weight: 700;
+  background: transparent; color: var(--brass-light); border: 0.0625em solid var(--brass); border-radius: 0.4em;
+}
+.toggle[aria-pressed='true'] { background: var(--brass); color: var(--ink); }
+
 /* Remove: a small ✕ in the card's corner, quiet until pointed at */
 .remove {
   position: absolute; top: 0.35em; right: 0.35em;
