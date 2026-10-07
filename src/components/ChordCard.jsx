@@ -39,7 +39,7 @@ export default function ChordCard({ index, chord, keyRoot, view, instrument, sch
         {view !== 'keys' && (instrument === 'bass'
           ? <BassDiagram root={root} quality={chord.quality} scheme={scheme} keyRoot={keyRoot} />
           : <GuitarDiagram root={root} quality={chord.quality} scheme={scheme} keyRoot={keyRoot} />)}
-        {view !== 'guitar' && <Keyboard root={root} quality={chord.quality} scheme={scheme} keyRoot={keyRoot} />}
+        {(view === 'keys' || view === 'both') && <Keyboard root={root} quality={chord.quality} scheme={scheme} keyRoot={keyRoot} />}
       </div>
 
 

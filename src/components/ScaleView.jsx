@@ -18,7 +18,7 @@ export default function ScaleView({ keyRoot, type, view, instrument }) {
         <Fretboard marks={marks} tuning={instrument === 'bass' ? BASS_TUNING : undefined}
                    label={`${name} on the ${instrument} neck, open strings to the 12th fret`} />
       )}
-      {view !== 'guitar' && <Piano marks={marks} label={`${name} on the keys: ${spelled}`} />}
+      {(view === 'keys' || view === 'both') && <Piano marks={marks} label={`${name} on the keys: ${spelled}`} />}
     </section>
   )
 }
