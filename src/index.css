@@ -5,9 +5,9 @@
 }
 
 :root {
-  --ink: #0d0b09;
-  --warm: #1e1810;
-  --mid: #2e2620;
+  --ink: #12150a;     /* the page: a very dark olive */
+  --warm: #1d2111;    /* the cards: a shade lighter */
+  --mid: #2b3019;
   --paper: #f4efe6;
   --cream: #e8e0d0;
   --muted: #a09282;
@@ -37,7 +37,7 @@ button, select { font: inherit; color: inherit; }
    select but its background from the system (white on Windows), so without this the options vanish. */
 select option { font-family: var(--sans); font-size: 1rem; font-weight: 400; color: var(--paper); background: var(--warm); }
 button { cursor: pointer; }
-button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
+button:focus-visible, select:focus-visible {
   outline: 0.19em solid var(--focus); outline-offset: 0.12em;
 }
 
@@ -50,8 +50,9 @@ button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
 }
 .info { align-self: flex-start; display: flex; flex-direction: column; align-items: flex-start; gap: 0.7em; min-width: 0; }   /* its own height, never stretched to the wheel's, which is measured from it */
 .bar-rows { display: flex; flex-direction: column; gap: 0.5em; font-size: 0.85em; }   /* the controls a little smaller */
-.head-wheel { flex: none; }
-.head-wheel .wheel.outline { width: 100%; height: 100%; }
+/* The wheel: a little taller than the info rows, reaching into the bar's padding above and below */
+.head-wheel { flex: none; width: calc(var(--wheel) + 1.2em); height: calc(var(--wheel) + 1.2em); margin: -0.45em 0 -0.6em; }
+.head-wheel .wheel { width: 100%; height: 100%; }
 .info .progression th { padding-left: 0; }
 .bar-row { display: flex; align-items: center; gap: 0.6em; flex-wrap: wrap; }
 .title { font-family: var(--bold); font-weight: 400; font-size: 1.6em; letter-spacing: 0.02em; margin-right: 0.6em; }
@@ -193,7 +194,7 @@ button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
 
 /* -- keys -- */
 .keys .key.white { fill: var(--cream); stroke: var(--ink); stroke-width: 1; }
-.keys .key.black { fill: #1a1612; stroke: var(--ink); stroke-width: 1; }
+.keys .key.black { fill: #1a1d10; stroke: var(--ink); stroke-width: 1; }
 .key-label { font-family: var(--bold); font-size: 10px; pointer-events: none; }
 
 /* -- the colour legend -- */
@@ -224,35 +225,43 @@ button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
   padding: 0.45em 0.6em; font-weight: 600; cursor: pointer;
 }
 
-/* -- the wheel -- */
-.wheel { width: min(100%, 22em); align-self: center; }
-.wheel-outer { fill: var(--ink); stroke: var(--brass); stroke-width: 1.2; }
-.wheel-inner { fill: var(--mid); stroke: var(--line); }
+/* -- the wheel: outlines, with the key and the progression's numbers filled in -- */
+.wheel { display: block; cursor: zoom-in; }
+.wheel.expanded { cursor: zoom-out; }
+.wheel-outer { fill: none; stroke: var(--brass); stroke-width: 1.5; }
+.wheel-inner { fill: none; stroke: var(--brass); stroke-width: 1.1; }
+.wheel-hub { fill: var(--ink); stroke: var(--brass); stroke-width: 1.1; }
+.wheel .divider { stroke: rgba(184, 146, 58, 0.8); stroke-width: 1.8; }
 .wheel-notes { transition: transform 0.6s ease; }
 .wheel-notes text { transition: transform 0.6s ease; }
-.wheel-note { cursor: pointer; }
+.wheel-note { cursor: pointer; outline: none; }
 .note-hit { fill: transparent; }
-.note-hit.current { fill: var(--brass); }
-.wheel-note:hover .note-hit:not(.current) { fill: rgba(184, 146, 58, 0.25); }
-.wheel-note-label { fill: var(--paper); font-family: var(--bold); font-size: 13px; pointer-events: none; }
-.wheel-number { font-family: var(--bold); font-size: 12px; }
-.number-used { fill: none; stroke: var(--brass-light); stroke-width: 1.6; }
+.note-hit.current { fill: var(--brass-light); stroke: var(--paper); stroke-width: 1.5; }   /* the key: a solid disc */
+.wheel-note:hover .note-hit:not(.current) { fill: none; stroke: var(--brass-light); stroke-width: 1.5; }
+.wheel-note-label { fill: var(--paper); font-family: var(--bold); font-size: 17px; pointer-events: none; }
+.wheel-note-label.current { fill: var(--ink); }
+.wheel-number { font-family: var(--bold); font-size: 14px; pointer-events: none; }
+.number-used { stroke: var(--paper); stroke-width: 1.2; }   /* in the progression: filled with its colour */
 .wheel-pointer { fill: var(--brass-light); }
+.wheel-toggle { cursor: inherit; outline: none; }
+.wheel-hub-label { fill: var(--brass-light); font-family: var(--bold); font-size: 19px; pointer-events: none; }
+/* Focus, drawn on the SVG itself: a white ring */
+.wheel-toggle:focus-visible .wheel-hub { stroke: var(--focus); stroke-width: 2.5; }
+.wheel-note:focus-visible .note-hit { stroke: var(--focus); stroke-width: 2.5; }
 
-/* The small wheel on the main screen: outlines only */
-.wheel.outline { width: 7em; flex: none; }
-.wheel.outline .wheel-outer { fill: none; stroke: var(--brass); stroke-width: 1.5; }
-.wheel.outline .wheel-inner { fill: none; stroke: var(--brass); stroke-width: 1.1; }
-.wheel-hub { fill: none; stroke: var(--line); stroke-width: 1; }
-.wheel .divider { stroke: var(--brass); stroke-width: 1.8; }
-.wheel.outline .divider { stroke: rgba(184, 146, 58, 0.8); stroke-width: 1.8; }
-.wheel.outline .note-hit.current { fill: none; stroke: var(--brass-light); stroke-width: 2.5; }
-.wheel.outline .wheel-note:hover .note-hit:not(.current) { fill: none; stroke: var(--line); stroke-width: 1.5; }
-.wheel.outline .wheel-note-label { font-size: 15px; }
-.wheel.outline .wheel-number { font-size: 14px; }
+/* Enlarged: as big as the window allows, over the page */
+.wheel-zoom {
+  margin: auto; padding: 1.5vmin; border: 0.0625em solid var(--line); border-radius: 50%;
+  background: var(--ink); color: var(--paper); overflow: visible;
+}
+.wheel-zoom::backdrop { background: rgba(8, 10, 4, 0.82); }
+.wheel-zoom .wheel { width: min(92vmin, 60em); height: min(92vmin, 60em); }
+.wheel-zoom[open] { animation: wheel-grow 0.25s ease-out; }
+@keyframes wheel-grow { from { transform: scale(0.55); opacity: 0; } }
 
 @media (prefers-reduced-motion: reduce) {
   .wheel-notes, .wheel-notes text { transition: none; }
+  .wheel-zoom[open] { animation: none; }
 }
 
 /* -- phones: the bar wraps, and the chords scroll two to a row at a fixed shape -- */
@@ -272,7 +281,7 @@ button:focus-visible, select:focus-visible, .wheel-note:focus-visible {
   .block { width: 100%; }
 
   .head { padding: 0.5em 0.75em 0.75em; gap: 0.75em; }
-  .head-wheel { max-width: 7em; max-height: 7em; }
+  .head-wheel { max-width: 7em; max-height: 7em; margin: 0; }
   .progression { max-width: 100%; overflow-x: auto; justify-content: flex-start; }
   .progression .nashville td { font-size: 1.5em; }
   .progression .names td { font-size: 1.05em; }

@@ -1,15 +1,19 @@
 import { useRef } from 'react'
-import { textOnDark } from '../music/contrast.js'
+import { labelOn, textOnDark } from '../music/contrast.js'
 import { DEGREE_COLORS, display, MAJOR_SCALE, NOTES, OUTSIDE_COLOR } from '../music/theory.js'
 
 // The Nashville numbers around the inside, one per semitone, 1 at the top.
 const NUMBERS = ['1', '♭2', '2', '♭3', '3', '4', '♭5', '5', '♭6', '6', '♭7', '7']
 
+// Sized so nothing touches: the number discs (r 10.8 at 46) clear the dividers either side (11.9 away)
+// and to the hub and mid rings; the note discs (r 15 at 82) sit inside the outer ring with room between.
 const R_OUTER = 100
 const R_NOTE = 82
 const R_MID = 64
 const R_NUMBER = 46
 const R_HUB = 28
+const R_USED = 10.8
+const R_KEY = 15
 
 // Divider strokes between the slices: halfway between one step and the next.
 const divider = (step, r1, r2) => {
@@ -23,10 +27,18 @@ const at = (step, r) => {
   return [Math.cos(a) * r, Math.sin(a) * r]
 }
 
+const pressed = (fn) => (e) => {
+  if (e.key === 'Enter' || e.key === ' ') {
+    e.preventDefault()
+    fn()
+  }
+}
+
 // The keys turn around the numbers: the key you're in sits at the top, over 1.
-// Pick a note on the outer ring to change key.
-// outline: the small version on the main screen, drawn as outlines rather than filled rings.
-export default function Wheel({ keyRoot, used, onKey, outline = false }) {
+// Pick a note on the outer ring to change key. Click anywhere else on the wheel (or its hub, which is
+// the keyboard's way in) to enlarge it, and again to put it back.
+// expanded: the enlarged one, whose notes can be reached by keyboard too.
+export default function Wheel({ keyRoot, used, onKey, onToggle, expanded = false }) {
   // Keep turning the short way round, so B to C is one step, not eleven back.
   const turn = useRef({ key: keyRoot, deg: -keyRoot * 30 })
   if (turn.current.key !== keyRoot) {
@@ -34,23 +46,26 @@ export default function Wheel({ keyRoot, used, onKey, outline = false }) {
     turn.current = { key: keyRoot, deg: turn.current.deg - step * 30 }
   }
   const deg = turn.current.deg
+  const keyName = display(NOTES[keyRoot])
 
   return (
-    <svg className={outline ? 'wheel outline' : 'wheel'} viewBox="-104 -104 208 208" role="group" aria-label="Key wheel">
+    <svg className={expanded ? 'wheel outline expanded' : 'wheel outline'} viewBox="-103 -103 206 206"
+         role="group" aria-label="Key wheel" onClick={onToggle}>
       <circle r={R_OUTER} className="wheel-outer" />
       <circle r={R_MID} className="wheel-inner" />
-      <circle r={R_HUB} className="wheel-hub" />
       {NUMBERS.map((_, step) => divider(step, R_HUB, R_MID))}
 
-      {/* Numbers: fixed. Diatonic ones in their colour; those in the progression ringed. */}
+      {/* Numbers: fixed. Each in its colour; those in the progression (or scale) filled with it. */}
       {NUMBERS.map((label, step) => {
         const [x, y] = at(step, R_NUMBER)
         const degree = MAJOR_SCALE.indexOf(step)
+        const color = degree >= 0 ? DEGREE_COLORS[degree + 1] : OUTSIDE_COLOR
+        const on = used.has(step)
         return (
           <g key={label}>
-            {used.has(step) && <circle cx={x} cy={y} r={11} className="number-used" />}
-            <text x={x} y={y} className="wheel-number" textAnchor="middle" dominantBaseline="central"
-                  style={{ fill: textOnDark(degree >= 0 ? DEGREE_COLORS[degree + 1] : OUTSIDE_COLOR) }}>
+            {on && <circle cx={x} cy={y} r={R_USED} className="number-used" style={{ fill: color }} />}
+            <text x={x} y={y} className={on ? 'wheel-number on' : 'wheel-number'} textAnchor="middle" dominantBaseline="central"
+                  style={{ fill: on ? labelOn(color) : textOnDark(color) }}>
               {label}
             </text>
           </g>
@@ -63,11 +78,14 @@ export default function Wheel({ keyRoot, used, onKey, outline = false }) {
         {NOTES.map((note, i) => {
           const [x, y] = at(i, R_NOTE)
           const current = i === keyRoot
+          const pick = () => onKey(i)
           return (
-            <g key={note} className="wheel-note" role="button" tabIndex={-1} onClick={() => onKey(i)}
-               aria-label={`Key of ${display(note)}`}>
-              <circle cx={x} cy={y} r={14} className={current ? 'note-hit current' : 'note-hit'} />
-              <text x={x} y={y} className="wheel-note-label" textAnchor="middle" dominantBaseline="central"
+            <g key={note} className="wheel-note" role="button" tabIndex={expanded ? 0 : -1}
+               aria-label={`Key of ${display(note)}`} aria-pressed={current}
+               onClick={(e) => { e.stopPropagation(); pick() }} onKeyDown={pressed(pick)}>
+              <circle cx={x} cy={y} r={R_KEY} className={current ? 'note-hit current' : 'note-hit'} />
+              <text x={x} y={y} className={current ? 'wheel-note-label current' : 'wheel-note-label'}
+                    textAnchor="middle" dominantBaseline="central"
                     style={{ transform: `rotate(${-deg}deg)`, transformOrigin: `${x}px ${y}px` }}>
                 {display(note)}
               </text>
@@ -75,7 +93,15 @@ export default function Wheel({ keyRoot, used, onKey, outline = false }) {
           )
         })}
       </g>
-      <path d="M -7 -104 L 7 -104 L 0 -94 Z" className="wheel-pointer" />
+      <path d="M -6 -103 L 6 -103 L 0 -99 Z" className="wheel-pointer" />
+
+      {/* The hub: the key, and the button that enlarges the wheel or puts it back. */}
+      <g className="wheel-toggle" role="button" tabIndex={0} aria-expanded={expanded}
+         aria-label={expanded ? 'Shrink the key wheel' : 'Enlarge the key wheel'}
+         onClick={(e) => { e.stopPropagation(); onToggle() }} onKeyDown={pressed(onToggle)}>
+        <circle r={R_HUB - 1} className="wheel-hub" />
+        <text className="wheel-hub-label" textAnchor="middle" dominantBaseline="central" aria-hidden="true">{keyName}</text>
+      </g>
     </svg>
   )
 }

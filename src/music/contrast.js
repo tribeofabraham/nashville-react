@@ -11,8 +11,8 @@ export const contrast = (a, b) => {
   return (hi + 0.05) / (lo + 0.05)
 }
 
-export const INK = '#0d0b09' // the page
-export const WARM = '#1e1810' // the cards
+export const INK = '#12150a' // the page
+export const WARM = '#1d2111' // the cards
 const WHITE = '#ffffff'
 
 // The label for a coloured dot or key: white or ink, whichever reads better on that colour.

@@ -78,7 +78,19 @@ export default function App() {
   const blockRef = useRef(null)
   const barRef = useRef(null)
   const infoRef = useRef(null)
-  const infoHeight = useHeightEm(infoRef)  // the wheel is as tall as the info rows beside it
+  const infoHeight = useHeightEm(infoRef)  // the wheel is as tall as the info rows beside it, and a little more
+  const [zoomed, setZoomed] = useState(false)
+  const zoomRef = useRef(null)
+  // The enlarged wheel is a modal dialog: focus goes into it, Esc and a click outside close it.
+  useEffect(() => {
+    const dialog = zoomRef.current
+    if (!dialog) return
+    if (zoomed && !dialog.open) {
+      dialog.showModal()
+      dialog.querySelector('.wheel-toggle')?.focus()   // on the hub, so Enter puts it back
+    }
+    if (!zoomed && dialog.open) dialog.close()
+  }, [zoomed])
   const content = useContentSize(blockRef, barRef)
   const scale = useSizer(sizerRef, { ...SIZER, designWidth: content.width, designHeight: content.height,
                                      enabled: scaling === 'fluid' })
@@ -181,10 +193,15 @@ export default function App() {
             <ScaleLine keyRoot={keyRoot} type={scaleType} />
           )}
         </div>
-        <div className="head-wheel" style={{ width: `${infoHeight}em`, height: `${infoHeight}em` }}>
-          <Wheel keyRoot={keyRoot} used={used} onKey={setKey} outline />
+        <div className="head-wheel" style={{ '--wheel': `${infoHeight}em` }}>
+          <Wheel keyRoot={keyRoot} used={used} onKey={setKey} onToggle={() => setZoomed(true)} />
         </div>
       </header>
+
+      <dialog className="wheel-zoom" ref={zoomRef} aria-label="Key wheel" onClose={() => setZoomed(false)}
+              onClick={(e) => { if (e.target === e.currentTarget) setZoomed(false) }}>
+        {zoomed && <Wheel keyRoot={keyRoot} used={used} onKey={setKey} onToggle={() => setZoomed(false)} expanded />}
+      </dialog>
 
       <p className="visually-hidden" aria-live="polite">{summary}</p>
 
