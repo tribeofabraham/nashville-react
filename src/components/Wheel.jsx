@@ -27,18 +27,9 @@ const at = (step, r) => {
   return [Math.cos(a) * r, Math.sin(a) * r]
 }
 
-const pressed = (fn) => (e) => {
-  if (e.key === 'Enter' || e.key === ' ') {
-    e.preventDefault()
-    fn()
-  }
-}
-
 // The keys turn around the numbers: the key you're in sits at the top, over 1.
-// Pick a note on the outer ring to change key. Click anywhere else on the wheel (or its hub, which is
-// the keyboard's way in) to enlarge it, and again to put it back.
-// expanded: the enlarged one, whose notes can be reached by keyboard too.
-export default function Wheel({ keyRoot, used, onKey, onToggle, expanded = false }) {
+// Pick a note on the outer ring to change key (mouse only: the Key dropdown is the keyboard's way).
+export default function Wheel({ keyRoot, used, onKey }) {
   // Keep turning the short way round, so B to C is one step, not eleven back.
   const turn = useRef({ key: keyRoot, deg: -keyRoot * 30 })
   if (turn.current.key !== keyRoot) {
@@ -49,8 +40,7 @@ export default function Wheel({ keyRoot, used, onKey, onToggle, expanded = false
   const keyName = display(NOTES[keyRoot])
 
   return (
-    <svg className={expanded ? 'wheel outline expanded' : 'wheel outline'} viewBox="-103 -103 206 206"
-         role="group" aria-label="Key wheel" onClick={onToggle}>
+    <svg className="wheel" viewBox="-103 -103 206 206" role="group" aria-label="Key wheel">
       <circle r={R_OUTER} className="wheel-outer" />
       <circle r={R_MID} className="wheel-inner" />
       {NUMBERS.map((_, step) => divider(step, R_HUB, R_MID))}
@@ -78,11 +68,9 @@ export default function Wheel({ keyRoot, used, onKey, onToggle, expanded = false
         {NOTES.map((note, i) => {
           const [x, y] = at(i, R_NOTE)
           const current = i === keyRoot
-          const pick = () => onKey(i)
           return (
-            <g key={note} className="wheel-note" role="button" tabIndex={expanded ? 0 : -1}
-               aria-label={`Key of ${display(note)}`} aria-pressed={current}
-               onClick={(e) => { e.stopPropagation(); pick() }} onKeyDown={pressed(pick)}>
+            <g key={note} className="wheel-note" role="button" tabIndex={-1}
+               aria-label={`Key of ${display(note)}`} aria-pressed={current} onClick={() => onKey(i)}>
               <circle cx={x} cy={y} r={R_KEY} className={current ? 'note-hit current' : 'note-hit'} />
               <text x={x} y={y} className={current ? 'wheel-note-label current' : 'wheel-note-label'}
                     textAnchor="middle" dominantBaseline="central"
@@ -95,13 +83,9 @@ export default function Wheel({ keyRoot, used, onKey, onToggle, expanded = false
       </g>
       <path d="M -6 -103 L 6 -103 L 0 -99 Z" className="wheel-pointer" />
 
-      {/* The hub: the key, and the button that enlarges the wheel or puts it back. */}
-      <g className="wheel-toggle" role="button" tabIndex={0} aria-expanded={expanded}
-         aria-label={expanded ? 'Shrink the key wheel' : 'Enlarge the key wheel'}
-         onClick={(e) => { e.stopPropagation(); onToggle() }} onKeyDown={pressed(onToggle)}>
-        <circle r={R_HUB - 1} className="wheel-hub" />
-        <text className="wheel-hub-label" textAnchor="middle" dominantBaseline="central" aria-hidden="true">{keyName}</text>
-      </g>
+      {/* The hub: the key you're in */}
+      <circle r={R_HUB - 1} className="wheel-hub" />
+      <text key={keyName} className="wheel-hub-label" textAnchor="middle" dominantBaseline="central" aria-hidden="true">{keyName}</text>
     </svg>
   )
 }

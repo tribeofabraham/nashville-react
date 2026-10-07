@@ -226,42 +226,30 @@ button:focus-visible, select:focus-visible {
 }
 
 /* -- the wheel: outlines, with the key and the progression's numbers filled in -- */
-.wheel { display: block; cursor: zoom-in; }
-.wheel.expanded { cursor: zoom-out; }
+/* A key change: the notes turn the short way round while the old key's disc fades out and the new
+   one's fades in, all on the same timing, so nothing jumps ahead of the turn. */
+.wheel { display: block; --turn: 0.55s cubic-bezier(0.45, 0, 0.2, 1); }
 .wheel-outer { fill: none; stroke: var(--brass); stroke-width: 1.5; }
 .wheel-inner { fill: none; stroke: var(--brass); stroke-width: 1.1; }
 .wheel-hub { fill: var(--ink); stroke: var(--brass); stroke-width: 1.1; }
 .wheel .divider { stroke: rgba(184, 146, 58, 0.8); stroke-width: 1.8; }
-.wheel-notes { transition: transform 0.6s ease; }
-.wheel-notes text { transition: transform 0.6s ease; }
+.wheel-notes { transition: transform var(--turn); will-change: transform; }
+.wheel-notes text { transition: transform var(--turn), fill var(--turn); }
 .wheel-note { cursor: pointer; outline: none; }
-.note-hit { fill: transparent; }
-.note-hit.current { fill: var(--brass-light); stroke: var(--paper); stroke-width: 1.5; }   /* the key: a solid disc */
-.wheel-note:hover .note-hit:not(.current) { fill: none; stroke: var(--brass-light); stroke-width: 1.5; }
+.note-hit { fill: transparent; stroke: transparent; stroke-width: 1.5; transition: fill var(--turn), stroke var(--turn); }
+.note-hit.current { fill: var(--brass-light); stroke: var(--paper); }   /* the key: a solid disc */
+.wheel-note:hover .note-hit:not(.current) { stroke: var(--brass-light); transition-duration: 0.15s; }
 .wheel-note-label { fill: var(--paper); font-family: var(--bold); font-size: 17px; pointer-events: none; }
 .wheel-note-label.current { fill: var(--ink); }
 .wheel-number { font-family: var(--bold); font-size: 14px; pointer-events: none; }
 .number-used { stroke: var(--paper); stroke-width: 1.2; }   /* in the progression: filled with its colour */
 .wheel-pointer { fill: var(--brass-light); }
-.wheel-toggle { cursor: inherit; outline: none; }
-.wheel-hub-label { fill: var(--brass-light); font-family: var(--bold); font-size: 19px; pointer-events: none; }
-/* Focus, drawn on the SVG itself: a white ring */
-.wheel-toggle:focus-visible .wheel-hub { stroke: var(--focus); stroke-width: 2.5; }
-.wheel-note:focus-visible .note-hit { stroke: var(--focus); stroke-width: 2.5; }
-
-/* Enlarged: as big as the window allows, over the page */
-.wheel-zoom {
-  margin: auto; padding: 1.5vmin; border: 0.0625em solid var(--line); border-radius: 50%;
-  background: var(--ink); color: var(--paper); overflow: visible;
-}
-.wheel-zoom::backdrop { background: rgba(8, 10, 4, 0.82); }
-.wheel-zoom .wheel { width: min(92vmin, 60em); height: min(92vmin, 60em); }
-.wheel-zoom[open] { animation: wheel-grow 0.25s ease-out; }
-@keyframes wheel-grow { from { transform: scale(0.55); opacity: 0; } }
+.wheel-hub-label { fill: var(--brass-light); font-family: var(--bold); font-size: 19px; pointer-events: none; animation: hub-in var(--turn); }
+@keyframes hub-in { from { opacity: 0; } }
 
 @media (prefers-reduced-motion: reduce) {
-  .wheel-notes, .wheel-notes text { transition: none; }
-  .wheel-zoom[open] { animation: none; }
+  .wheel-notes, .wheel-notes text, .note-hit { transition: none; }
+  .wheel-hub-label { animation: none; }
 }
 
 /* -- phones: the bar wraps, and the chords scroll two to a row at a fixed shape -- */
